@@ -1,0 +1,27 @@
+﻿using MegaCrit.Sts2.Core.Commands;
+using MegaCrit.Sts2.Core.Entities.Cards;
+using MegaCrit.Sts2.Core.GameActions.Multiplayer;
+using MegaCrit.Sts2.Core.Localization.DynamicVars;
+using MegaCrit.Sts2.Core.Models.Powers;
+
+namespace Hellkite.HellkiteCode.Cards.Uncommon.Powers;
+
+public sealed class StaticShock() : HellkiteCard(1, CardType.Power, CardRarity.Uncommon, TargetType.Self)
+{
+    protected override IEnumerable<DynamicVar> CanonicalVars => 
+        [
+            new PowerVar<DexterityPower>(1M), 
+            new PowerVar<ThornsPower>(4M)
+        ];
+
+    protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
+    {
+        await PowerCmd.Apply<DexterityPower>(Owner.Creature, DynamicVars[nameof(DexterityPower)].BaseValue, Owner.Creature, this);
+        await PowerCmd.Apply<ThornsPower>(Owner.Creature, DynamicVars[nameof(ThornsPower)].BaseValue, Owner.Creature, this);
+    }
+
+    protected override void OnUpgrade()
+    {
+        DynamicVars[nameof(ThornsPower)].UpgradeValueBy(2M);
+    }
+}
