@@ -15,8 +15,8 @@ public sealed class CooledCore() : HellkiteCard(0, CardType.Skill, CardRarity.Un
     
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
-        int spent = await HellkiteCmd.SpendUpToCharge(Owner.Creature, (int)DynamicVars["MaxCharge"].BaseValue);
-        if (spent > 0) await PowerCmd.Apply<PlatingPower>(Owner.Creature, spent, Owner.Creature, this);
+        int spent = await HellkiteCmd.SpendUpToCharge(Owner.Creature, (int)DynamicVars["MaxCharge"].BaseValue, choiceContext);
+        if (spent > 0) await PowerCmd.Apply<PlatingPower>(choiceContext, Owner.Creature, spent, Owner.Creature, this);
         await CardPileCmd.Draw(choiceContext, DynamicVars.Cards.IntValue, Owner);
     }
 

@@ -9,20 +9,18 @@ namespace Hellkite.HellkiteCode.Cards.Rare.Skills;
 public sealed class HowManyTimesCard() : HellkiteCard(0, CardType.Skill, CardRarity.Rare, TargetType.AnyEnemy)
 {
     protected override IEnumerable<DynamicVar> CanonicalVars => [
-        new PowerVar<HowManyTimesPower>(1M),
-        new PowerVar<ScorchPower>(2M)
+        new("Power", 2M)
     ];
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
         if (play.Target != null)
-            await PowerCmd.Apply<HowManyTimesPower>(play.Target, DynamicVars[nameof(HowManyTimesPower)].BaseValue,
-                Owner.Creature, this);
+            await PowerCmd.Apply<HowManyTimesPower>(choiceContext, play.Target, DynamicVars["Power"].BaseValue, Owner.Creature, this);
         await CardCmd.Exhaust(choiceContext, this);
     }
 
     protected override void OnUpgrade()
     {
-        DynamicVars[nameof(ScorchPower)].UpgradeValueBy(1M);
+        DynamicVars["Power"].UpgradeValueBy(1M);
     }
 }

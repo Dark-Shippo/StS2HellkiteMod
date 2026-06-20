@@ -23,7 +23,7 @@ public sealed class TradeBlows() : HellkiteCard(1, CardType.Attack, CardRarity.C
                 .Targeting(play.Target)
                 .WithHitFx("vfx/vfx_attack_slash")
                 .Execute(choiceContext);
-        await PowerCmd.Apply<RazorScalesPower>(Owner.Creature, DynamicVars[nameof(RazorScalesPower)].BaseValue, Owner.Creature, this);
+        await PowerCmd.Apply<RazorScalesPower>(choiceContext, Owner.Creature, DynamicVars[nameof(RazorScalesPower)].BaseValue, Owner.Creature, this);
     }
 
     protected override void OnUpgrade()

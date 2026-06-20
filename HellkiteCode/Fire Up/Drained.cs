@@ -36,7 +36,7 @@ public sealed class Drained : HellkitePower
             var kindle = power.Owner.GetPower<KindlePower>();
             if (kindle != null)
             {
-                await PowerCmd.ModifyAmount(kindle, -toRemove, power.Owner, null);
+                await PowerCmd.ModifyAmount(choiceContext, kindle, -toRemove, power.Owner, null);
             }
         }
         await PowerCmd.Remove(power);

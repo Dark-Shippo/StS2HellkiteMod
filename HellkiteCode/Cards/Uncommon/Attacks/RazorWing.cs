@@ -22,7 +22,7 @@ public sealed class RazorWing() : HellkiteCard(1, CardType.Attack, CardRarity.Un
                 .WithHitFx("vfx/vfx_attack_slash")
                 .Execute(choiceContext);
             int gain = play.Target.GetPowerAmount<ScorchPower>() / 4;
-            if (gain > 0) await PowerCmd.Apply<RazorScalesPower>(Owner.Creature, gain, Owner.Creature, this);
+            if (gain > 0) await PowerCmd.Apply<RazorScalesPower>(choiceContext, Owner.Creature, gain, Owner.Creature, this);
         }
     }
     

@@ -19,7 +19,7 @@ public sealed class NightsRest() : HellkiteCard(2, CardType.Skill, CardRarity.Ra
     [
         new HealVar(10M),
         new HealVar("BonusHeal", 5M),
-        new ChargeCostVar("RequiredCharge", 15)
+        new ChargeCostVar(15)
     ];
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
@@ -29,7 +29,7 @@ public sealed class NightsRest() : HellkiteCard(2, CardType.Skill, CardRarity.Ra
         if (ChargeHandler.GetCharge(Owner.Creature) >= 15)
         {
             await CreatureCmd.Heal(Owner.Creature, DynamicVars["BonusHeal"].BaseValue);
-            await ChargeHandler.LoseCharge(Owner.Creature, DynamicVars["RequiredCharge"].BaseValue);
+            await ChargeHandler.LoseCharge(Owner.Creature, DynamicVars["Charge"].BaseValue, choiceContext);
         }
     }
 

@@ -17,8 +17,8 @@ public sealed class SharedPyre() : HellkiteCard(1, CardType.Skill, CardRarity.Ra
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
-        await PowerCmd.Apply<VigorPower>(Owner.Creature, DynamicVars[nameof(VigorPower)].BaseValue, Owner.Creature, this);
-        await ChargeHandler.GainCharge(Owner.Creature, DynamicVars[ChargeCostVar.DefaultName].BaseValue);
+        await PowerCmd.Apply<VigorPower>(choiceContext, Owner.Creature, DynamicVars[nameof(VigorPower)].BaseValue, Owner.Creature, this);
+        await ChargeHandler.GainCharge(Owner.Creature, DynamicVars[ChargeCostVar.DefaultName].BaseValue, choiceContext);
     }
     
     protected override void OnUpgrade() => RemoveKeyword(CardKeyword.Exhaust);

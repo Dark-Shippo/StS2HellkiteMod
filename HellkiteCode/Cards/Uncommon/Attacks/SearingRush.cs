@@ -18,7 +18,7 @@ public sealed class SearingRush() : HellkiteCard(1, CardType.Attack, CardRarity.
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
-        await ChargeHandler.LoseCharge(Owner.Creature, DynamicVars[nameof(ChargeCostVar)].BaseValue);
+        await ChargeHandler.LoseCharge(Owner.Creature, DynamicVars[nameof(ChargeCostVar)].BaseValue, choiceContext);
 
         bool highHeat = ChargeHandler.GetCharge(Owner.Creature) >= 21;
         if (play.Target != null)
@@ -27,7 +27,7 @@ public sealed class SearingRush() : HellkiteCard(1, CardType.Attack, CardRarity.
                 .Targeting(play.Target)
                 .WithHitFx("vfx/vfx_attack_slash")
                 .Execute(choiceContext);
-        if (highHeat) await PowerCmd.Apply<VigorPower>(Owner.Creature, DynamicVars[nameof(VigorPower)].BaseValue, Owner.Creature, this);
+        if (highHeat) await PowerCmd.Apply<VigorPower>(choiceContext, Owner.Creature, DynamicVars[nameof(VigorPower)].BaseValue, Owner.Creature, this);
     }
 
     protected override void OnUpgrade()

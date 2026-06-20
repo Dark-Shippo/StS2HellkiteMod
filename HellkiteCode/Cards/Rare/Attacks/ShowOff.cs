@@ -27,13 +27,13 @@ public sealed class ShowOff() : HellkiteCard(0, CardType.Attack, CardRarity.Rare
                 .Targeting(play.Target)
                 .WithHitFx("vfx/vfx_attack_slash")
                 .Execute(choiceContext); 
-            await HellkiteCmd.ApplyScorch(play.Target, 1M, Owner.Creature, this);
+            await HellkiteCmd.ApplyScorch(play.Target, 1M, Owner.Creature, this, choiceContext);
         }
 
         if (x >= 4)
         {
             int scorch = play.Target.GetPowerAmount<ScorchPower>();
-            if (scorch > 0) await HellkiteCmd.ApplyScorch(play.Target, scorch, Owner.Creature, this);
+            if (scorch > 0) await HellkiteCmd.ApplyScorch(play.Target, scorch, Owner.Creature, this, choiceContext);
         }
     }
     protected override void OnUpgrade() => DynamicVars.Damage.UpgradeValueBy(2M);

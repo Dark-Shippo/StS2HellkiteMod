@@ -22,8 +22,8 @@ public sealed class DragonsFire() : HellkiteCard(1, CardType.Attack, CardRarity.
         {
             int alreadyBurning = CombatState.HittableEnemies.Count(e => e.GetPowerAmount<ScorchPower>() > 0);
             await HellkiteCmd.AttackAll(choiceContext, this, DynamicVars.Damage.BaseValue);
-            await HellkiteCmd.ApplyScorchAll(CombatState, DynamicVars[nameof(ScorchPower)].BaseValue, Owner.Creature, this);
-            if (alreadyBurning > 0) await PowerCmd.Apply<VigorPower>(Owner.Creature, DynamicVars[nameof(VigorPower)].BaseValue * alreadyBurning, Owner.Creature, this);
+            await HellkiteCmd.ApplyScorchAll(CombatState, DynamicVars[nameof(ScorchPower)].BaseValue, Owner.Creature, this, choiceContext);
+            if (alreadyBurning > 0) await PowerCmd.Apply<VigorPower>(choiceContext, Owner.Creature, DynamicVars[nameof(VigorPower)].BaseValue * alreadyBurning, Owner.Creature, this);
         }
     }
     

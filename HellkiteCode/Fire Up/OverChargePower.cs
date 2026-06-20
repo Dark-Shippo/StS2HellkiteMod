@@ -25,11 +25,11 @@ public sealed class OverChargePower : HellkitePower
         return dealer != null && (dealer != Owner && !Owner.Pets.Contains(dealer) || !props.IsPoweredAttack() || cardSource == null) ? 1M : 2M;
     }
     
-    public override async Task BeforeTurnEnd(PlayerChoiceContext choiceContext, CombatSide side)
+    public override async Task BeforeSideTurnEnd(PlayerChoiceContext choiceContext, CombatSide side, IEnumerable<Creature> participants)
     {
         if (side != CombatSide.Player) return;
         await HellkiteCmd.AttackAll(choiceContext, null, Amount);
         await PowerCmd.Remove(this);
-        await PowerCmd.Apply<Drained>(Owner, 1M, Owner, null);
+        await PowerCmd.Apply<Drained>(choiceContext, Owner, 1M, Owner, null);
     }
 }

@@ -20,12 +20,12 @@ public sealed class FireForce() : HellkiteCard(0, CardType.Attack, CardRarity.Ra
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
-        await ChargeHandler.LoseCharge(Owner.Creature, DynamicVars[nameof(ChargeCostVar)].BaseValue);
+        await ChargeHandler.LoseCharge(Owner.Creature, DynamicVars[nameof(ChargeCostVar)].BaseValue, choiceContext);
         await HellkiteCmd.AttackAll(choiceContext, this, DynamicVars.Damage.BaseValue);
         if (CombatState != null)
             await HellkiteCmd.ApplyScorchAll(CombatState, DynamicVars[nameof(ScorchPower)].BaseValue, Owner.Creature,
-                this);
-        await PowerCmd.Apply<VigorPower>(Owner.Creature, DynamicVars[nameof(VigorPower)].BaseValue, Owner.Creature, this);
+                this, choiceContext);
+        await PowerCmd.Apply<VigorPower>(choiceContext, Owner.Creature, DynamicVars[nameof(VigorPower)].BaseValue, Owner.Creature, this);
     }
 
     protected override void OnUpgrade()

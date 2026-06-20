@@ -22,7 +22,7 @@ public sealed class InvigoratingFumes() : HellkiteCard(1, CardType.Skill, CardRa
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
         await CreatureCmd.GainBlock(Owner.Creature, DynamicVars.Block, play);
-        await PowerCmd.Apply<KindlePower>(Owner.Creature, DynamicVars[nameof(KindlePower)].BaseValue, Owner.Creature,
+        await PowerCmd.Apply<KindlePower>(choiceContext, Owner.Creature, DynamicVars[nameof(KindlePower)].BaseValue, Owner.Creature,
             this);
     }
     

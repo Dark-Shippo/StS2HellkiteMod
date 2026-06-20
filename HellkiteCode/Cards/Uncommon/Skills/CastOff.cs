@@ -15,12 +15,13 @@ public sealed class CastOff() : HellkiteCard(1, CardType.Skill, CardRarity.Uncom
     protected override IEnumerable<DynamicVar> CanonicalVars => [
         new BlockVar(6M, ValueProp.Move),
         new PowerVar<PlatingPower>(4M),
-        new ChargeCostVar(1M) // gain, not cost
+        new ChargeCostVar(1M)
     ];
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
         await PowerCmd.Apply<PlatingPower>(
+            choiceContext, 
             Owner.Creature,
             DynamicVars[nameof(PlatingPower)].BaseValue,
             Owner.Creature,
@@ -29,7 +30,7 @@ public sealed class CastOff() : HellkiteCard(1, CardType.Skill, CardRarity.Uncom
         await CreatureCmd.GainBlock(Owner.Creature, DynamicVars.Block, play);
         await ChargeHandler.GainCharge(
             Owner.Creature,
-            DynamicVars[nameof(ChargeCostVar)].BaseValue);
+            DynamicVars[nameof(ChargeCostVar)].BaseValue, choiceContext);
     }
 
     protected override void OnUpgrade()

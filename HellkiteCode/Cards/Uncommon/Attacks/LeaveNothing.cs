@@ -21,7 +21,7 @@ public sealed class LeaveNothing() : HellkiteCard(3, CardType.Attack, CardRarity
                 .Targeting(play.Target)
                 .WithHitFx("vfx/vfx_attack_slash")
                 .Execute(choiceContext);
-        await ChargeHandler.GainCharge(Owner.Creature, DynamicVars[ChargeCostVar.DefaultName].BaseValue);
+        await ChargeHandler.GainCharge(Owner.Creature, DynamicVars[ChargeCostVar.DefaultName].BaseValue, choiceContext);
     }
 
     protected override void OnUpgrade()

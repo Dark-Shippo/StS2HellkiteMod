@@ -21,7 +21,7 @@ public sealed class BoilOverCard() : HellkiteCard(2,
    
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
-        await PowerCmd.Apply<OverChargePower>(Owner.Creature, 1M, Owner.Creature, this);
+        await PowerCmd.Apply<OverChargePower>(choiceContext, Owner.Creature, 1M, Owner.Creature, this);
     }
 
     protected override void OnUpgrade()

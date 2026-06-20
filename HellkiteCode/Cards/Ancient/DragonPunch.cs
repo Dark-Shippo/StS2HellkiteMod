@@ -26,6 +26,7 @@ public sealed class DragonPunch() : HellkiteCard(1, CardType.Attack, CardRarity.
                 .WithHitFx("vfx/vfx_attack_slash")
                 .Execute(choiceContext);
             await PowerCmd.Apply<ScorchPower>(
+                choiceContext, 
                 play.Target,
                 DynamicVars[nameof(ScorchPower)].BaseValue,
                 Owner.Creature,
@@ -34,7 +35,7 @@ public sealed class DragonPunch() : HellkiteCard(1, CardType.Attack, CardRarity.
             int targetScorch = play.Target.GetPowerAmount<ScorchPower>();
             if (targetScorch > 0)
             {
-                await PowerCmd.Apply<ScorchPower>(play.Target, targetScorch, Owner.Creature, this);
+                await PowerCmd.Apply<ScorchPower>(choiceContext, play.Target, targetScorch, Owner.Creature, this);
             }
         }
     }

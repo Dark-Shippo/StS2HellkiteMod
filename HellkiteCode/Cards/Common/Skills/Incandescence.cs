@@ -15,7 +15,7 @@ public sealed class Incandescence() : HellkiteCard(1, CardType.Skill, CardRarity
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
         await CardPileCmd.Draw(choiceContext, DynamicVars.Cards.IntValue, Owner); 
-        await ChargeHandler.GainCharge(Owner.Creature, DynamicVars[ChargeCostVar.DefaultName].BaseValue);
+        await ChargeHandler.GainCharge(Owner.Creature, DynamicVars[ChargeCostVar.DefaultName].BaseValue, choiceContext);
     }
     
     protected override void OnUpgrade() => DynamicVars[ChargeCostVar.DefaultName].UpgradeValueBy(1M);

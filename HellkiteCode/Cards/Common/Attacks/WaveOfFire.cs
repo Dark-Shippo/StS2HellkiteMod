@@ -18,11 +18,11 @@ public sealed class WaveOfFire() : HellkiteCard(0, CardType.Attack, CardRarity.C
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
-        await ChargeHandler.LoseCharge(Owner.Creature, DynamicVars[nameof(ChargeCostVar)].BaseValue);
+        await ChargeHandler.LoseCharge(Owner.Creature, DynamicVars[nameof(ChargeCostVar)].BaseValue, choiceContext);
         await HellkiteCmd.AttackAll(choiceContext, this, DynamicVars.Damage.BaseValue);
         if (CombatState != null)
             await HellkiteCmd.ApplyScorchAll(CombatState, DynamicVars[nameof(ScorchPower)].BaseValue, Owner.Creature,
-                this);
+                this, choiceContext);
     }
 
     protected override void OnUpgrade()

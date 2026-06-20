@@ -14,7 +14,7 @@ public sealed class TemperTheHide() : HellkiteCard(1, CardType.Skill, CardRarity
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
-        await PowerCmd.Apply<PlatingPower>(Owner.Creature, DynamicVars[nameof(PlatingPower)].BaseValue, Owner.Creature, this); 
+        await PowerCmd.Apply<PlatingPower>(choiceContext, Owner.Creature, DynamicVars[nameof(PlatingPower)].BaseValue, Owner.Creature, this); 
         await CardPileCmd.Draw(choiceContext, DynamicVars.Cards.IntValue, Owner);
     }
     

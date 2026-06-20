@@ -22,7 +22,7 @@ public sealed class SmolderGuard() : HellkiteCard(2, CardType.Skill, CardRarity.
     {
         await CreatureCmd.GainBlock(Owner.Creature, DynamicVars.Block, play); 
         if (Owner.Creature.GetPowerAmount<RazorScalesPower>() > 0 || Owner.Creature.GetPowerAmount<PlatingPower>() > 0) 
-            await PowerCmd.Apply<KindlePower>(Owner.Creature, DynamicVars[nameof(KindlePower)].BaseValue, Owner.Creature, this);
+            await PowerCmd.Apply<KindlePower>(choiceContext, Owner.Creature, DynamicVars[nameof(KindlePower)].BaseValue, Owner.Creature, this);
     }
 
     protected override void OnUpgrade()

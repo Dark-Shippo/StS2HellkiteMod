@@ -19,7 +19,7 @@ public sealed class BankHeat() : HellkiteCard(0, CardType.Skill, CardRarity.Comm
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
-        await ChargeHandler.GainCharge(Owner.Creature, DynamicVars[ChargeCostVar.DefaultName].BaseValue); 
+        await ChargeHandler.GainCharge(Owner.Creature, DynamicVars[ChargeCostVar.DefaultName].BaseValue, choiceContext); 
         await CreatureCmd.GainBlock(Owner.Creature, DynamicVars.Block, play);
     }
     protected override void OnUpgrade() => DynamicVars.Block.UpgradeValueBy(3M);

@@ -12,41 +12,64 @@ public sealed class EternalFlamePower : HellkitePower
 {
     public override PowerType Type => PowerType.Buff;
 
-    public override PowerStackType StackType => PowerStackType.Counter;
+    public override PowerStackType StackType =>
+        PowerStackType.Counter;
 
     protected override object InitInternalData() => new Data();
 
     public override Task BeforeCardPlayed(CardPlay cardPlay)
     {
-        if (Applier?.Player == null || cardPlay.Card.Owner != Applier.Player)
+        if (Owner.Player == null ||
+            cardPlay.Card.Owner != Owner.Player)
+        {
             return Task.CompletedTask;
-        GetInternalData<Data>().AmountsForPlayedCards.Add(cardPlay.Card, Amount);
+        }
+
+        // Snapshot the power amount when the card begins resolving.
+        GetInternalData<Data>()
+            .AmountsForPlayedCards[cardPlay.Card] = Amount;
+
         return Task.CompletedTask;
     }
 
-    public override async Task AfterCardPlayed(PlayerChoiceContext context, CardPlay cardPlay)
+    public override async Task AfterCardPlayed(
+        PlayerChoiceContext choiceContext,
+        CardPlay cardPlay)
     {
-        if (Owner.Player != null)
+        Data data = GetInternalData<Data>();
+
+        // Check this before using combat RNG. Otherwise every unrelated
+        // card play advances the random-target sequence.
+        if (!data.AmountsForPlayedCards.Remove(
+                cardPlay.Card,
+                out int scorchAmount))
         {
-            Creature? target = Owner.Player.RunState.Rng.CombatTargets.NextItem(CombatState.HittableEnemies);
-            if (!GetInternalData<Data>().AmountsForPlayedCards.Remove(cardPlay.Card, out _))
-                return;
-            Flash();
-
-            if (target != null)
-                await PowerCmd.Apply<ScorchPower>(target, DynamicVars[nameof(ScorchPower)].BaseValue, Applier, null);
-        }
-    }
-
-    public override async Task AfterTurnEnd(PlayerChoiceContext choiceContext, CombatSide side)
-    {
-        if (side != CombatSide.Player)
             return;
-        await PowerCmd.Remove(this);
+        }
+
+        if (scorchAmount <= 0)
+            return;
+
+        Creature? target =
+            Owner.Player?.RunState.Rng.CombatTargets.NextItem(
+                CombatState.HittableEnemies);
+
+        if (target == null)
+            return;
+
+        Flash();
+
+        await PowerCmd.Apply<ScorchPower>(
+            choiceContext,
+            target,
+            scorchAmount,
+            Owner,
+            null);
     }
 
-    private class Data
+    private sealed class Data
     {
-        public readonly Dictionary<CardModel, int> AmountsForPlayedCards = new ();
+        public readonly Dictionary<CardModel, int>
+            AmountsForPlayedCards = new();
     }
 }

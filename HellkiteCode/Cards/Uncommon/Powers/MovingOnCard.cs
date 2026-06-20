@@ -9,17 +9,16 @@ namespace Hellkite.HellkiteCode.Cards.Uncommon.Powers;
 public sealed class MovingOnCard() : HellkiteCard(0, CardType.Power, CardRarity.Uncommon, TargetType.Self)
 {
     protected override IEnumerable<DynamicVar> CanonicalVars => [
-        new PowerVar<MovingOnPower>(1M),
-        new CardsVar(1)
+        new("Power", 2M)
     ];
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
-        await PowerCmd.Apply<MovingOnPower>(Owner.Creature, DynamicVars[nameof(MovingOnPower)].BaseValue, Owner.Creature, this);
+        await PowerCmd.Apply<MovingOnPower>(choiceContext, Owner.Creature, DynamicVars["Power"].BaseValue, Owner.Creature, this);
     }
 
     protected override void OnUpgrade()
     {
-        DynamicVars[nameof(CardsVar)].UpgradeValueBy(1M);
+        DynamicVars["Power"].UpgradeValueBy(1M);
     }
 }

@@ -11,7 +11,8 @@ public sealed class MoltenCragsPower : HellkitePower
 {
     public override PowerType Type => PowerType.Buff;
 
-    public override PowerStackType StackType => PowerStackType.Counter;
+    public override PowerStackType StackType =>
+        PowerStackType.Counter;
 
     public override async Task AfterDamageReceived(
         PlayerChoiceContext choiceContext,
@@ -21,9 +22,22 @@ public sealed class MoltenCragsPower : HellkitePower
         Creature? dealer,
         CardModel? cardSource)
     {
-        if (target != Owner || dealer == null || result.UnblockedDamage <= 0)
+        if (target != Owner)
             return;
 
-        await PowerCmd.Apply<ScorchPower>(dealer, result.UnblockedDamage, Owner, cardSource);
+        if (dealer == null || dealer.Side == Owner.Side)
+            return;
+
+        if (result.UnblockedDamage <= 0)
+            return;
+
+        Flash();
+
+        await PowerCmd.Apply<ScorchPower>(
+            choiceContext,
+            dealer,
+            result.UnblockedDamage,
+            Owner,
+            null);
     }
 }

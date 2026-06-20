@@ -13,7 +13,7 @@ public sealed class BurnBright() : HellkiteCard(1, CardType.Skill, CardRarity.Un
         new ChargeCostVar(8M)];
     
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play) => 
-        await ChargeHandler.GainCharge(Owner.Creature, DynamicVars[ChargeCostVar.DefaultName].BaseValue);
+        await ChargeHandler.GainCharge(Owner.Creature, DynamicVars[ChargeCostVar.DefaultName].BaseValue, choiceContext);
     
     protected override void OnUpgrade() => 
         DynamicVars[ChargeCostVar.DefaultName].UpgradeValueBy(2M);

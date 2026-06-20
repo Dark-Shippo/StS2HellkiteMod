@@ -23,7 +23,7 @@ public sealed class DrainEnergy() : HellkiteCard(1, CardType.Attack, CardRarity.
                 .WithHitFx("vfx/vfx_attack_slash")
                 .Execute(choiceContext);
 
-        await ChargeHandler.GainCharge(Owner.Creature, DynamicVars[ChargeCostVar.DefaultName].BaseValue);
+        await ChargeHandler.GainCharge(Owner.Creature, DynamicVars[ChargeCostVar.DefaultName].BaseValue, choiceContext);
     }
 
     protected override void OnUpgrade()

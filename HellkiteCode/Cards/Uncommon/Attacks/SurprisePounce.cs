@@ -26,7 +26,7 @@ public sealed class SurprisePounce() : HellkiteCard(0, CardType.Attack, CardRari
         if (!FirstAttack) return;
         if (FirstAttack)
         {
-            await ChargeHandler.GainCharge(Owner.Creature, DynamicVars[ChargeCostVar.DefaultName].BaseValue);
+            await ChargeHandler.GainCharge(Owner.Creature, DynamicVars[ChargeCostVar.DefaultName].BaseValue, choiceContext);
             await CardPileCmd.Draw(choiceContext, DynamicVars.Cards.IntValue, Owner);
         }
     }

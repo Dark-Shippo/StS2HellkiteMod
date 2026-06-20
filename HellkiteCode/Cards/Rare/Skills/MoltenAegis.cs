@@ -1,4 +1,5 @@
-﻿using Hellkite.HellkiteCode.Powers;
+﻿using Hellkite.HellkiteCode.Fire_Up;
+using Hellkite.HellkiteCode.Powers;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
@@ -17,10 +18,10 @@ public sealed class MoltenAegis() : HellkiteCard(2, CardType.Skill, CardRarity.R
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
-        await ChargeHandler.LoseCharge(Owner.Creature, DynamicVars[nameof(ChargeCostVar)].BaseValue);
+        await ChargeHandler.LoseCharge(Owner.Creature, DynamicVars[nameof(ChargeCostVar)].BaseValue, choiceContext);
 
-        await PowerCmd.Apply<PlatingPower>(Owner.Creature, DynamicVars[nameof(PlatingPower)].BaseValue, Owner.Creature, this); 
-        await PowerCmd.Apply<RazorScalesPower>(Owner.Creature, DynamicVars[nameof(RazorScalesPower)].BaseValue, Owner.Creature, this);
+        await PowerCmd.Apply<PlatingPower>(choiceContext, Owner.Creature, DynamicVars[nameof(PlatingPower)].BaseValue, Owner.Creature, this); 
+        await PowerCmd.Apply<RazorScalesPower>(choiceContext, Owner.Creature, DynamicVars[nameof(RazorScalesPower)].BaseValue, Owner.Creature, this);
     }
 
     protected override void OnUpgrade()

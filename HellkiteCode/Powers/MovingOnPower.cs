@@ -1,7 +1,6 @@
-﻿using Hellkite.HellkiteCode.Cards;
-using MegaCrit.Sts2.Core.Entities.Powers;
-using MegaCrit.Sts2.Core.Combat;
+﻿using Hellkite.HellkiteCode.Fire_Up;
 using MegaCrit.Sts2.Core.Entities.Players;
+using MegaCrit.Sts2.Core.Entities.Powers;
 
 namespace Hellkite.HellkiteCode.Powers;
 
@@ -9,40 +8,19 @@ public sealed class MovingOnPower : HellkitePower
 {
     public override PowerType Type => PowerType.Buff;
 
-    public override PowerStackType StackType => PowerStackType.Counter;
+    public override PowerStackType StackType =>
+        PowerStackType.Counter;
 
-    public override Task AfterSideTurnStart(CombatSide side, CombatState combatState)
+    public override decimal ModifyHandDraw(
+        Player player,
+        decimal count)
     {
-        try
-        {
-            if (Owner.Player != null)
-            {
-                Player player = Owner.Player;
-                Decimal count = DynamicVars.Cards.IntValue;
-                if (ChargeHandler.GetCharge(Owner) <= 5)
-                {
-                    ModifyHandDraw(player, count);
-                }
-                else if (ChargeHandler.GetCharge(Owner) > 5)
-                {
-                    ModifyHandDraw(player, 0M);
-                }
-            }
+        if (player != Owner.Player)
+            return count;
 
-            return Task.CompletedTask;
-        }
-        catch (Exception exception)
-        {
-            return Task.FromException(exception);
-        }
-    }
-    
-    public override Decimal ModifyHandDraw(Player player, Decimal count)
-    {   
-        if (ChargeHandler.GetCharge(Owner) <= 5)
-        {
-            return player != Owner.Player ? count : count + Amount;
-        }
-        return 0;
+        if (ChargeHandler.GetCharge(Owner) > 5)
+            return count;
+
+        return count + Amount;
     }
 }

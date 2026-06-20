@@ -11,8 +11,17 @@ public sealed class BurnAway() : HellkiteCard(0, CardType.Attack, CardRarity.Unc
     protected override IEnumerable<DynamicVar> CanonicalVars => [
         new DamageVar(3M, ValueProp.Move)];
     
-    protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play) => 
-        await HellkiteCmd.AttackTarget(choiceContext, this, play.Target, DynamicVars.Damage.BaseValue * ChargeHandler.GetChargeGainedThisTurn(Owner.Creature));
-    
+    protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
+    {
+        if (play.Target != null)
+            await HellkiteCmd.AttackTarget
+            (
+                choiceContext,
+                this,
+                play.Target,
+                DynamicVars.Damage.BaseValue * ChargeHandler.GetChargeGainedThisTurn(Owner.Creature)
+            );
+    }
+
     protected override void OnUpgrade() => DynamicVars.Damage.UpgradeValueBy(1M);
 }

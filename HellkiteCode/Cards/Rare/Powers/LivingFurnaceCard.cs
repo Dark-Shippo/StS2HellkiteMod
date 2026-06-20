@@ -10,13 +10,12 @@ public sealed class LivingFurnaceCard() : HellkiteCard(3, CardType.Power, CardRa
 {
     protected override IEnumerable<DynamicVar> CanonicalVars => 
     [
-        new PowerVar<LivingFurnacePower>(1M),
-        new PowerVar<KindlePower>(1M)
+        new("Power", 2M)
     ];
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
-        await PowerCmd.Apply<LivingFurnacePower>(Owner.Creature, DynamicVars[nameof(LivingFurnacePower)].BaseValue, Owner.Creature, this);
+        await PowerCmd.Apply<LivingFurnacePower>(choiceContext, Owner.Creature, DynamicVars["Power"].BaseValue, Owner.Creature, this);
     }
 
     protected override void OnUpgrade()

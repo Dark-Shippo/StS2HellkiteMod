@@ -13,11 +13,11 @@ public sealed class WorldBreaker() : HellkiteCard(2, CardType.Attack, CardRarity
     
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
-        int spent = await ChargeHandler.SpendAllCharge(Owner.Creature);
+        int spent = await ChargeHandler.SpendAllCharge(Owner.Creature, choiceContext);
         await HellkiteCmd.AttackAll(choiceContext, this, DynamicVars.Damage.BaseValue);
         if (spent > 0)
             if (CombatState != null)
-                await HellkiteCmd.ApplyScorchAll(CombatState, spent, Owner.Creature, this);
+                await HellkiteCmd.ApplyScorchAll(CombatState, spent, Owner.Creature, this, choiceContext);
     }
     
     protected override void OnUpgrade() => DynamicVars.Damage.UpgradeValueBy(1M);

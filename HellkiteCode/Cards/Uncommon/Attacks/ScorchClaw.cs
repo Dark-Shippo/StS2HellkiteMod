@@ -18,7 +18,7 @@ public sealed class ScorchClaw() : HellkiteCard(1, CardType.Attack, CardRarity.U
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
-        await ChargeHandler.LoseCharge(Owner.Creature, DynamicVars[nameof(ChargeCostVar)].BaseValue);
+        await ChargeHandler.LoseCharge(Owner.Creature, DynamicVars[nameof(ChargeCostVar)].BaseValue, choiceContext);
 
         if (play.Target != null)
         {
@@ -31,7 +31,8 @@ public sealed class ScorchClaw() : HellkiteCard(1, CardType.Attack, CardRarity.U
                 play.Target,
                 DynamicVars[nameof(ScorchPower)].BaseValue,
                 Owner.Creature,
-                this);
+                this,
+                choiceContext);
         }
     }
 

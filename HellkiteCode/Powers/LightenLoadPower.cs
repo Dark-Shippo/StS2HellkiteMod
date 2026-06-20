@@ -1,4 +1,4 @@
-﻿using Hellkite.HellkiteCode.Cards;
+﻿using Hellkite.HellkiteCode.Fire_Up;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Powers;
 using MegaCrit.Sts2.Core.Entities.Players;
@@ -15,8 +15,7 @@ public sealed class LightenLoadPower : HellkitePower
     {
         if (ChargeHandler.GetCharge(Owner) >= 21)
         {
-            LightenLoadPower power = this;
-            await PlayerCmd.GainEnergy(power.Amount, player);
+            await PlayerCmd.GainEnergy(Amount, player);
         }
     }
 }

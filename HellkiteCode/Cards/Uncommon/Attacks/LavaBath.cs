@@ -16,7 +16,7 @@ public sealed class LavaBath() : HellkiteCard(0, CardType.Attack, CardRarity.Unc
     
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
-        int x = await HellkiteCmd.SpendUpToCharge(Owner.Creature, ChargeHandler.GetCharge(Owner.Creature));
+        int x = await HellkiteCmd.SpendUpToCharge(Owner.Creature, ChargeHandler.GetCharge(Owner.Creature), choiceContext);
         for (int i = 0; i < x; i++)
         {
             var target = HellkiteCmd.RandomEnemy(Owner.Creature);
@@ -27,7 +27,7 @@ public sealed class LavaBath() : HellkiteCard(0, CardType.Attack, CardRarity.Unc
                     .Targeting(play.Target)
                     .WithHitFx("vfx/vfx_attack_slash")
                     .Execute(choiceContext);
-            await HellkiteCmd.ApplyScorch(target, DynamicVars[nameof(ScorchPower)].BaseValue, Owner.Creature, this);
+            await HellkiteCmd.ApplyScorch(target, DynamicVars[nameof(ScorchPower)].BaseValue, Owner.Creature, this, choiceContext);
         }
     }
 

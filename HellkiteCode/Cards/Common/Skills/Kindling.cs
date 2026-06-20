@@ -18,7 +18,7 @@ public sealed class Kindling() : HellkiteCard(1, CardType.Skill, CardRarity.Comm
         ];
     
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play) => 
-        await PowerCmd.Apply<KindlePower>(Owner.Creature, DynamicVars[nameof(KindlePower)].BaseValue, Owner.Creature, this);
+        await PowerCmd.Apply<KindlePower>(choiceContext, Owner.Creature, DynamicVars[nameof(KindlePower)].BaseValue, Owner.Creature, this);
     
     protected override void OnUpgrade() => DynamicVars[nameof(KindlePower)].UpgradeValueBy(1M);
 }

@@ -10,17 +10,16 @@ namespace Hellkite.HellkiteCode.Cards.Uncommon.Powers;
 public sealed class ScaleMailCard() : HellkiteCard(1, CardType.Power, CardRarity.Uncommon, TargetType.Self)
 {
     protected override IEnumerable<DynamicVar> CanonicalVars => [
-        new PowerVar<ScaleMailPower>(1M),
-        new PowerVar<PlatingPower>(1M)
+        new("Power", 1M)
     ];
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
-        await PowerCmd.Apply<ScaleMailPower>(Owner.Creature, DynamicVars[nameof(ScaleMailPower)].BaseValue, Owner.Creature, this);
+        await PowerCmd.Apply<ScaleMailPower>(choiceContext, Owner.Creature, DynamicVars["Power"].BaseValue, Owner.Creature, this);
     }
 
     protected override void OnUpgrade()
     {
-        DynamicVars[nameof(PlatingPower)].UpgradeValueBy(1M);
+        DynamicVars["Power"].UpgradeValueBy(1M);
     }
 }

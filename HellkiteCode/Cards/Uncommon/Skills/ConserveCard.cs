@@ -17,8 +17,8 @@ public sealed class ConserveCard() : HellkiteCard(1, CardType.Skill, CardRarity.
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
-        await PowerCmd.Apply<EnergyNextTurnPower>(Owner.Creature, DynamicVars.Energy.BaseValue, Owner.Creature, this);
-        await PowerCmd.Apply<ChargeNextTurnPower>(Owner.Creature, DynamicVars[nameof(ChargeNextTurnPower)].BaseValue, Owner.Creature, this);
+        await PowerCmd.Apply<EnergyNextTurnPower>(choiceContext, Owner.Creature, DynamicVars.Energy.BaseValue, Owner.Creature, this);
+        await PowerCmd.Apply<ChargeNextTurnPower>(choiceContext, Owner.Creature, DynamicVars[nameof(ChargeNextTurnPower)].BaseValue, Owner.Creature, this);
     }
 
     protected override void OnUpgrade()

@@ -27,8 +27,10 @@ public sealed class Shedshell() : HellkiteCard(1, CardType.Attack, CardRarity.Co
                 .WithHitFx("vfx/vfx_attack_slash")
                 .Execute(choiceContext);
             if (Owner.Creature.GetPowerAmount<PlatingPower>() > 0)
-                await HellkiteCmd.ApplyScorch(play.Target!, DynamicVars[nameof(ScorchPower)].BaseValue, Owner.Creature,
-                    this);
+                if (play.Target != null)
+                    await HellkiteCmd.ApplyScorch(play.Target, DynamicVars[nameof(ScorchPower)].BaseValue,
+                        Owner.Creature,
+                        this, choiceContext);
         }
     }
 

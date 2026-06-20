@@ -10,19 +10,35 @@ public sealed class FlashFirePower : HellkitePower
 {
     public override PowerType Type => PowerType.Buff;
 
-    public override PowerStackType StackType => PowerStackType.Counter;
+    public override PowerStackType StackType =>
+        PowerStackType.Counter;
 
-    public override async Task AfterCardDrawnEarly(
+    public override async Task AfterCardDrawn(
         PlayerChoiceContext choiceContext,
         CardModel card,
         bool fromHandDraw)
     {
+        // Ignore the normal cards drawn during the turn's hand-draw step.
         if (fromHandDraw)
-        {
-            foreach (Creature target in CombatState.HittableEnemies)
-            {
-                await PowerCmd.Apply<ScorchPower>(target, DynamicVars[nameof(ScorchPower)].BaseValue, Owner, null);
-            }
-        }
+            return;
+
+        // In multiplayer, do not react to another player's draws.
+        if (card.Owner != Owner.Player)
+            return;
+
+        List<Creature> targets =
+            CombatState.HittableEnemies.ToList();
+
+        if (targets.Count == 0)
+            return;
+
+        Flash();
+
+        await PowerCmd.Apply<ScorchPower>(
+            choiceContext,
+            targets,
+            Amount,
+            Owner,
+            null);
     }
 }

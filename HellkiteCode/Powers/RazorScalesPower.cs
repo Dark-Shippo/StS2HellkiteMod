@@ -10,7 +10,9 @@ namespace Hellkite.HellkiteCode.Powers;
 public sealed class RazorScalesPower : HellkitePower
 {
     public override PowerType Type => PowerType.Buff;
-    public override PowerStackType StackType => PowerStackType.Counter;
+
+    public override PowerStackType StackType =>
+        PowerStackType.Counter;
 
     public override async Task AfterDamageReceived(
         PlayerChoiceContext choiceContext,
@@ -20,16 +22,32 @@ public sealed class RazorScalesPower : HellkitePower
         Creature? dealer,
         CardModel? cardSource)
     {
-        if (target != Owner || result.UnblockedDamage <= 0 || dealer == null) return;
+        if (target != Owner)
+            return;
+
+        if (dealer == null || dealer.Side == Owner.Side)
+            return;
+
+        if (result.UnblockedDamage <= 0)
+            return;
+
+        int retaliationDamage = Amount;
+
+        Flash();
 
         await CreatureCmd.Damage(
-            new ThrowingPlayerChoiceContext(),
+            choiceContext,
             dealer,
-            Amount,
+            retaliationDamage,
             ValueProp.Unpowered | ValueProp.Unblockable,
             Owner,
             null);
 
-        await PowerCmd.ModifyAmount(this, -1M, Owner, null);
+        await PowerCmd.ModifyAmount(
+            choiceContext,
+            this,
+            -1M,
+            Owner,
+            null);
     }
 }

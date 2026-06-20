@@ -18,7 +18,7 @@ public sealed class CatchFire() : HellkiteCard(2, CardType.Skill, CardRarity.Unc
         {
             var target = HellkiteCmd.RandomEnemy(Owner.Creature); 
             if (target == null) break; 
-            await HellkiteCmd.ApplyScorch(target, DynamicVars[nameof(ScorchPower)].BaseValue, Owner.Creature, this);
+            await HellkiteCmd.ApplyScorch(target, DynamicVars[nameof(ScorchPower)].BaseValue, Owner.Creature, this, choiceContext);
         }
     }
     protected override void OnUpgrade() => DynamicVars.Repeat.UpgradeValueBy(1M);

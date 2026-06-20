@@ -9,17 +9,16 @@ namespace Hellkite.HellkiteCode.Cards.Rare.Powers;
 public sealed class CauterizeCard() : HellkiteCard(2, CardType.Power, CardRarity.Rare, TargetType.Self)
 {
     protected override IEnumerable<DynamicVar> CanonicalVars => [
-        new PowerVar<CauterizePower>(1M),
-        new PowerVar<ScorchPower>(1M)
+        new("Power", 1M),
     ];
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
-        await PowerCmd.Apply<CauterizePower>(Owner.Creature, DynamicVars[nameof(CauterizePower)].BaseValue, Owner.Creature, this);
+        await PowerCmd.Apply<CauterizePower>(choiceContext, Owner.Creature, DynamicVars["Power"].BaseValue, Owner.Creature, this);
     }
 
     protected override void OnUpgrade()
     {
-        DynamicVars[nameof(ScorchPower)].UpgradeValueBy(1M);
+        DynamicVars["Power"].UpgradeValueBy(1M);
     }
 }

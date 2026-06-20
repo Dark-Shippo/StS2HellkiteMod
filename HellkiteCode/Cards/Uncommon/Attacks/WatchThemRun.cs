@@ -15,10 +15,14 @@ public sealed class WatchThemRun() : HellkiteCard(1, CardType.Attack, CardRarity
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
-        await ChargeHandler.LoseCharge(Owner.Creature, DynamicVars[nameof(ChargeCostVar)].BaseValue);
+        await ChargeHandler.LoseCharge(Owner.Creature, DynamicVars[nameof(ChargeCostVar)].BaseValue, choiceContext);
 
-        await HellkiteCmd.AttackTarget(choiceContext, this, play.Target, DynamicVars.Damage.BaseValue);
-        if (play.Target != null) await HellkiteCmd.TriggerScorchOnce(choiceContext, play.Target, Owner.Creature, this);
+        if (play.Target != null)
+        {
+            await HellkiteCmd.AttackTarget(choiceContext, this, play.Target, DynamicVars.Damage.BaseValue);
+            if (play.Target != null)
+                await HellkiteCmd.TriggerScorchOnce(choiceContext, play.Target, Owner.Creature, this);
+        }
     }
     
     protected override void OnUpgrade() => DynamicVars.Damage.UpgradeValueBy(3M);

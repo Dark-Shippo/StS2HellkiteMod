@@ -23,7 +23,7 @@ public sealed class LowBurn() : HellkiteCard(1, CardType.Skill, CardRarity.Commo
         await CreatureCmd.GainBlock(Owner.Creature, DynamicVars.Block, play);
         if (CombatState != null)
             await HellkiteCmd.ApplyScorchAll(CombatState, DynamicVars[nameof(ScorchPower)].BaseValue, Owner.Creature,
-                this);
+                this, choiceContext);
     }
 
     protected override void OnUpgrade()

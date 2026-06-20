@@ -15,8 +15,8 @@ public sealed class SunBask() : HellkiteCard(1, CardType.Skill, CardRarity.Commo
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
-        await ChargeHandler.GainCharge(Owner.Creature, DynamicVars[ChargeCostVar.DefaultName].BaseValue); 
-        await PowerCmd.Apply<ChargeNextTurnPower>(Owner.Creature, DynamicVars["NextCharge"].BaseValue, Owner.Creature, this);
+        await ChargeHandler.GainCharge(Owner.Creature, DynamicVars[ChargeCostVar.DefaultName].BaseValue, choiceContext); 
+        await PowerCmd.Apply<ChargeNextTurnPower>(choiceContext, Owner.Creature, DynamicVars["NextCharge"].BaseValue, Owner.Creature, this);
     }
     
     protected override void OnUpgrade() => DynamicVars["NextCharge"].UpgradeValueBy(1M);

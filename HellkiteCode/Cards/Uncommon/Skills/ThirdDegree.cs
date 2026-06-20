@@ -18,7 +18,7 @@ public sealed class ThirdDegree() : HellkiteCard(1, CardType.Skill, CardRarity.U
         if (play.Target != null && play.Target.GetPowerAmount<ScorchPower>() <= 0) return;
         if (play.Target != null)
             await HellkiteCmd.ApplyScorch(play.Target, DynamicVars[nameof(ScorchPower)].BaseValue, Owner.Creature,
-                this);
+                this, choiceContext);
         await CardPileCmd.Draw(choiceContext, DynamicVars.Cards.IntValue, Owner);
     }
     

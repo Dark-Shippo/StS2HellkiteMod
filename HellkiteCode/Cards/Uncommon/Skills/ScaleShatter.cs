@@ -8,7 +8,7 @@ public sealed class ScaleShatter() : HellkiteCard(1, CardType.Skill, CardRarity.
 {
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
-        int lost = await HellkiteCmd.RemoveAllRazorScales(Owner.Creature); 
+        int lost = await HellkiteCmd.RemoveAllRazorScales(Owner.Creature,choiceContext); 
         if (lost > 0) await HellkiteCmd.AttackAll(choiceContext, this, lost);
     }
     protected override void OnUpgrade() => EnergyCost.UpgradeBy(-1);

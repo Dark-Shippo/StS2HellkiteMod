@@ -19,7 +19,7 @@ public sealed class Cataclysm() : HellkiteCard(1, CardType.Skill, CardRarity.Rar
         for (int i = 0; i < DynamicVars.Repeat.IntValue; i++)
             if (CombatState != null)
                 await HellkiteCmd.ApplyScorchAll(CombatState, DynamicVars[nameof(ScorchPower)].BaseValue,
-                    Owner.Creature, this);
+                    Owner.Creature, this, choiceContext);
     }
 
     protected override void OnUpgrade()

@@ -1,9 +1,10 @@
-﻿using MegaCrit.Sts2.Core.Commands;
-using MegaCrit.Sts2.Core.Entities.Powers;
-using MegaCrit.Sts2.Core.Combat;
-using MegaCrit.Sts2.Core.Models;
-using MegaCrit.Sts2.Core.GameActions.Multiplayer;
+﻿using MegaCrit.Sts2.Core.Combat;
+using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
+using MegaCrit.Sts2.Core.Entities.Creatures;
+using MegaCrit.Sts2.Core.Entities.Powers;
+using MegaCrit.Sts2.Core.GameActions.Multiplayer;
+using MegaCrit.Sts2.Core.Models;
 
 namespace Hellkite.HellkiteCode.Powers;
 
@@ -11,36 +12,67 @@ public sealed class HowManyTimesPower : HellkitePower
 {
     public override PowerType Type => PowerType.Buff;
 
-    public override PowerStackType StackType => PowerStackType.Counter;
+    public override PowerStackType StackType =>
+        PowerStackType.Counter;
 
     protected override object InitInternalData() => new Data();
 
     public override Task BeforeCardPlayed(CardPlay cardPlay)
     {
-        if (Applier?.Player == null || cardPlay.Card.Owner != Applier.Player)
+        if (Applier?.Player == null)
             return Task.CompletedTask;
-        GetInternalData<Data>().AmountsForPlayedCards.Add(cardPlay.Card, Amount);
+
+        if (cardPlay.Card.Owner != Applier.Player)
+            return Task.CompletedTask;
+
+        // Snapshot Amount in case the power changes before resolution finishes.
+        GetInternalData<Data>()
+            .AmountsForPlayedCards[cardPlay.Card] = Amount;
+
         return Task.CompletedTask;
     }
 
-    public override async Task AfterCardPlayed(PlayerChoiceContext context, CardPlay cardPlay)
+    public override async Task AfterCardPlayed(
+        PlayerChoiceContext choiceContext,
+        CardPlay cardPlay)
     {
-        if (!GetInternalData<Data>().AmountsForPlayedCards.Remove(cardPlay.Card, out int amount))
+        Data data = GetInternalData<Data>();
+
+        if (!data.AmountsForPlayedCards.Remove(
+                cardPlay.Card,
+                out int scorchAmount))
+        {
             return;
+        }
+
+        if (scorchAmount <= 0)
+            return;
+
         Flash();
-        await PowerCmd.Apply<ScorchPower>(Owner, DynamicVars[nameof(ScorchPower)].BaseValue, Applier, null);
+
+        await PowerCmd.Apply<ScorchPower>(
+            choiceContext,
+            Owner,
+            scorchAmount,
+            Applier,
+            null);
     }
 
-    public override async Task AfterTurnEnd(PlayerChoiceContext choiceContext, CombatSide side)
+    public override async Task AfterSideTurnEnd(
+        PlayerChoiceContext choiceContext,
+        CombatSide side,
+        IEnumerable<Creature> participants)
     {
-        HowManyTimesPower power = this;
+        // The card says "this turn," so remove it when the player side ends.
         if (side != CombatSide.Player)
             return;
-        await PowerCmd.Remove( power);
+
+        await PowerCmd.Remove(this);
     }
 
-    private class Data
+    private sealed class Data
     {
-        public readonly Dictionary<CardModel, int> AmountsForPlayedCards = new ();
+        public readonly Dictionary<CardModel, int>
+            AmountsForPlayedCards = new();
     }
 }

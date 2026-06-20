@@ -1,11 +1,10 @@
-﻿using MegaCrit.Sts2.Core.Commands;
-using MegaCrit.Sts2.Core.Entities.Cards;
+﻿using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Entities.Powers;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
+using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models;
-
 
 namespace Hellkite.HellkiteCode.Powers;
 
@@ -15,10 +14,17 @@ public sealed class BurningSoulPower : HellkitePower
 
     public override PowerStackType StackType => PowerStackType.Counter;
 
-    private CardModel? _firstScorchCard;
-    private bool _firstScorchCardFinished;
-    private bool _isDuplicatingScorch;
-    
+    protected override IEnumerable<DynamicVar> CanonicalVars =>
+    [
+        new PowerVar<BurningSoulPower>(Amount)
+    ];
+
+    // The first card this turn that successfully attempts to apply Scorch.
+    private CardModel? _doubledScorchCard;
+
+    // Becomes true once that card's entire play series has finished.
+    private bool _doubledScorchCardFinished;
+
     public override Task AfterPlayerTurnStart(
         PlayerChoiceContext choiceContext,
         Player player)
@@ -26,76 +32,73 @@ public sealed class BurningSoulPower : HellkitePower
         if (player != Owner.Player)
             return Task.CompletedTask;
 
-        _firstScorchCard = null;
-        _firstScorchCardFinished = false;
-        _isDuplicatingScorch = false;
+        _doubledScorchCard = null;
+        _doubledScorchCardFinished = false;
 
         return Task.CompletedTask;
     }
-    
-    public override async Task AfterPowerAmountChanged(
+
+    public override decimal ModifyPowerAmountGivenMultiplicative(
         PowerModel power,
+        Creature giver,
         decimal amount,
-        Creature? applier,
+        Creature? target,
         CardModel? cardSource)
     {
-        // Prevent the duplicated Scorch from triggering this method again.
-        if (_isDuplicatingScorch)
-            return;
+        // Burning Soul has already been consumed for this turn.
+        if (_doubledScorchCardFinished)
+            return 1M;
 
-        // Only react to positive Scorch applications.
-        if (power is not ScorchPower scorchPower || amount <= 0M)
-            return;
+        // Only positive Scorch applications qualify.
+        if (power is not ScorchPower || amount <= 0M)
+            return 1M;
 
-        // Burning Soul only doubles Scorch applied by its owner.
-        if (applier != Owner)
-            return;
+        // Only Scorch applied by this power's owner qualifies.
+        if (giver != Owner)
+            return 1M;
 
-        // Environmental, relic, potion, and power-based Scorch do not count.
-        // Remove this check if all Scorch sources should qualify.
-        if (cardSource == null)
-            return;
+        // Exclude Scorch from powers, relics, potions, and environmental effects.
+        if (cardSource is null)
+            return 1M;
 
-        // The first card to apply Scorch becomes this turn's doubled card.
-        if (_firstScorchCard == null && !_firstScorchCardFinished)
-        {
-            _firstScorchCard = cardSource;
-        }
+        // Ensure this is actually one of the owner's cards.
+        if (cardSource.Owner != Owner.Player)
+            return 1M;
 
-        // Scorch from later cards is not doubled.
-        if (cardSource != _firstScorchCard)
-            return;
+        // The first card that applies Scorch becomes the doubled card.
+        _doubledScorchCard ??= cardSource;
 
-        try
-        {
-            _isDuplicatingScorch = true;
+        // Scorch from any later card is unaffected.
+        if (!ReferenceEquals(cardSource, _doubledScorchCard))
+            return 1M;
+
+        // One Burning Soul stack doubles Scorch.
+        // Additional stacks add another copy: 2 stacks = 3x, etc.
+        return 1M + Amount;
+    }
+
+    public override Task AfterModifyingPowerAmountGiven(PowerModel power)
+    {
+        // This callback only runs for models that actually modified the amount.
+        if (power is ScorchPower)
             Flash();
 
-            // Apply exactly the amount that was just added.
-            await PowerCmd.Apply<ScorchPower>(
-                scorchPower.Owner,
-                amount,
-                Owner,
-                cardSource);
-        }
-        finally
-        {
-            _isDuplicatingScorch = false;
-        }
+        return Task.CompletedTask;
     }
-    
-    public override Task AfterCardPlayed(PlayerChoiceContext context, CardPlay cardPlay)
+
+    public override Task AfterCardPlayed(
+        PlayerChoiceContext choiceContext,
+        CardPlay cardPlay)
     {
         if (cardPlay.Card.Owner != Owner.Player)
             return Task.CompletedTask;
 
+        // Treat repeated/autoplayed instances in one series as the same card play.
         if (!cardPlay.IsLastInSeries)
             return Task.CompletedTask;
 
-        if (_firstScorchCard == cardPlay.Card)
-        {
-            _firstScorchCardFinished = true;
-        }
+        if (ReferenceEquals(cardPlay.Card, _doubledScorchCard))
+            _doubledScorchCardFinished = true;
 
         return Task.CompletedTask;
     }

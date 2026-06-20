@@ -11,11 +11,10 @@ public sealed class CoveringFire() : HellkiteCard(2, CardType.Power, CardRarity.
     public override CardMultiplayerConstraint MultiplayerConstraint => CardMultiplayerConstraint.MultiplayerOnly;
 
     protected override IEnumerable<DynamicVar> CanonicalVars => [
-        new PowerVar<CoveringFirePower>(1M)];
+        new("Power", 1M)];
     
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play) => 
-        await PowerCmd.Apply<CoveringFirePower>(Owner.Creature, 
-            DynamicVars[nameof(CoveringFirePower)].BaseValue, Owner.Creature, this);
+        await PowerCmd.Apply<CoveringFirePower>(choiceContext, Owner.Creature, DynamicVars["Power"].BaseValue, Owner.Creature, this);
     
-    protected override void OnUpgrade() => DynamicVars[nameof(CoveringFirePower)].UpgradeValueBy(1M);
+    protected override void OnUpgrade() => DynamicVars["Power"].UpgradeValueBy(1M);
 }

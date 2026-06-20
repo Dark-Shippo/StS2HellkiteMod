@@ -15,8 +15,8 @@ public sealed class SharpenScales() : HellkiteCard(1, CardType.Skill, CardRarity
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
-        await PowerCmd.Apply<RazorScalesPower>(Owner.Creature, DynamicVars[nameof(RazorScalesPower)].BaseValue, Owner.Creature, this); 
-        await ChargeHandler.GainCharge(Owner.Creature, DynamicVars[ChargeCostVar.DefaultName].BaseValue);
+        await PowerCmd.Apply<RazorScalesPower>(choiceContext, Owner.Creature, DynamicVars[nameof(RazorScalesPower)].BaseValue, Owner.Creature, this); 
+        await ChargeHandler.GainCharge(Owner.Creature, DynamicVars[ChargeCostVar.DefaultName].BaseValue, choiceContext);
     }
     
     protected override void OnUpgrade() => DynamicVars[nameof(RazorScalesPower)].UpgradeValueBy(1M);

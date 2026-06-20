@@ -32,6 +32,7 @@ public sealed class FirePunch() : HellkiteCard(1, CardType.Attack, CardRarity.Ba
                 .WithHitFx("vfx/vfx_attack_slash")
                 .Execute(choiceContext);
             await PowerCmd.Apply<ScorchPower>(
+                choiceContext, 
                 play.Target,
                 DynamicVars[nameof(ScorchPower)].BaseValue,
                 Owner.Creature,

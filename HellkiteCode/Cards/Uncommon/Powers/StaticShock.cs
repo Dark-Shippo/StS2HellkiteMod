@@ -16,8 +16,8 @@ public sealed class StaticShock() : HellkiteCard(1, CardType.Power, CardRarity.U
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
-        await PowerCmd.Apply<DexterityPower>(Owner.Creature, DynamicVars[nameof(DexterityPower)].BaseValue, Owner.Creature, this);
-        await PowerCmd.Apply<ThornsPower>(Owner.Creature, DynamicVars[nameof(ThornsPower)].BaseValue, Owner.Creature, this);
+        await PowerCmd.Apply<DexterityPower>(choiceContext, Owner.Creature, DynamicVars[nameof(DexterityPower)].BaseValue, Owner.Creature, this);
+        await PowerCmd.Apply<ThornsPower>(choiceContext, Owner.Creature, DynamicVars[nameof(ThornsPower)].BaseValue, Owner.Creature, this);
     }
 
     protected override void OnUpgrade()

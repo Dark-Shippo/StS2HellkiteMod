@@ -15,7 +15,7 @@ public sealed class SunnyDay() : HellkiteCard(2, CardType.Skill, CardRarity.Unco
     {
         if (CombatState != null)
             await HellkiteCmd.ApplyScorchAll(CombatState, DynamicVars[nameof(ScorchPower)].BaseValue, Owner.Creature,
-                this);
+                this, choiceContext);
     }
 
     protected override void OnUpgrade() => DynamicVars[nameof(ScorchPower)].UpgradeValueBy(2M);

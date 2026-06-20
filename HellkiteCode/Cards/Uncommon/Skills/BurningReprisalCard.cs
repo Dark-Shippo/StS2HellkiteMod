@@ -14,22 +14,27 @@ public sealed class BurningReprisalCard() : HellkiteCard(1, CardType.Skill, Card
     
     protected override IEnumerable<DynamicVar> CanonicalVars => 
         [
-            new PowerVar<BurningReprisalPower>(1),
-            new BlockVar(8M, ValueProp.Move)
+            new BlockVar(8M, ValueProp.Move),
+            new PowerVar<RazorScalesPower>(2M),
+            new PowerVar<ScorchPower>(2M),
+            new("Power", 2M)
         ];
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
         await CreatureCmd.GainBlock(Owner.Creature, DynamicVars.Block, play);
+        await PowerCmd.Apply<RazorScalesPower>(choiceContext, Owner.Creature, DynamicVars[nameof(RazorScalesPower)].BaseValue, Owner.Creature, this);
         await PowerCmd.Apply<BurningReprisalPower>(
+            choiceContext, 
             Owner.Creature,
-            DynamicVars[nameof(BurningReprisalPower)].BaseValue,
+            DynamicVars["Power"].BaseValue,
             Owner.Creature,
             this);
     }
 
     protected override void OnUpgrade()
     {
-        this.DynamicVars.Block.UpgradeValueBy(3M);
+        DynamicVars.Block.UpgradeValueBy(3M);
+        DynamicVars[nameof(RazorScalesPower)].UpgradeValueBy(1M);
     }
 }

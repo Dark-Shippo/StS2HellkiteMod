@@ -9,17 +9,16 @@ namespace Hellkite.HellkiteCode.Cards.Rare.Powers;
 public sealed class FlashFireCard() : HellkiteCard(1, CardType.Power, CardRarity.Rare, TargetType.Self)
 {
     protected override IEnumerable<DynamicVar> CanonicalVars => [
-        new PowerVar<FlashFirePower>(1M),
-        new PowerVar<ScorchPower>(2M)
+        new("Power", 2M)
     ];
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
-        await PowerCmd.Apply<FlashFirePower>(Owner.Creature, DynamicVars[nameof(FlashFirePower)].BaseValue, Owner.Creature, this);
+        await PowerCmd.Apply<FlashFirePower>(choiceContext, Owner.Creature, DynamicVars["Power"].BaseValue, Owner.Creature, this);
     }
 
     protected override void OnUpgrade()
     {
-        DynamicVars[nameof(ScorchPower)].UpgradeValueBy(1M);
+        DynamicVars["Power"].UpgradeValueBy(1M);
     }
 }

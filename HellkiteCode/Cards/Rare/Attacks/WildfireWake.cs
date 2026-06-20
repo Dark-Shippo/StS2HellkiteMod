@@ -25,7 +25,7 @@ public sealed class WildfireWake() : HellkiteCard(0, CardType.Attack, CardRarity
                 {
                     foreach (var enemy in CombatState.HittableEnemies)
                     {
-                        await HellkiteCmd.ApplyScorch(enemy, pair.Value, Owner.Creature, this);
+                        await HellkiteCmd.ApplyScorch(enemy, pair.Value, Owner.Creature, this, choiceContext);
                     }
                 }
             }

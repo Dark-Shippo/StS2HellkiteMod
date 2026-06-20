@@ -11,10 +11,10 @@ public sealed class HotFlash() : HellkiteCard(1, CardType.Skill, CardRarity.Comm
     protected override IEnumerable<DynamicVar> CanonicalVars => [
         new PowerVar<ScorchPower>(3M)];
     
-    protected override async Task OnPlay(PlayerChoiceContext c, CardPlay p)
+    protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
-        if (p.Target != null)
-            await HellkiteCmd.ApplyScorch(p.Target, DynamicVars[nameof(ScorchPower)].BaseValue, Owner.Creature, this);
+        if (play.Target != null)
+            await HellkiteCmd.ApplyScorch(play.Target, DynamicVars[nameof(ScorchPower)].BaseValue, Owner.Creature, this, choiceContext);
     }
 
     protected override void OnUpgrade() => 

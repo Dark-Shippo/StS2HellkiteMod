@@ -1,7 +1,8 @@
-﻿using Hellkite.HellkiteCode.Cards;
+﻿using Hellkite.HellkiteCode.Fire_Up;
 using MegaCrit.Sts2.Core.Commands;
+using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Entities.Powers;
-using MegaCrit.Sts2.Core.Combat;
+using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models.Powers;
 
 namespace Hellkite.HellkiteCode.Powers;
@@ -10,13 +11,26 @@ public sealed class FuelTheFlamesPower : HellkitePower
 {
     public override PowerType Type => PowerType.Buff;
 
-    public override PowerStackType StackType => PowerStackType.Counter;
+    public override PowerStackType StackType =>
+        PowerStackType.Counter;
 
-    public override async Task AfterSideTurnStart(CombatSide side, CombatState combatState)
+    public override async Task AfterPlayerTurnStartLate(
+        PlayerChoiceContext choiceContext,
+        Player player)
     {
-        if (side == Owner.Side && ChargeHandler.GetCharge(Owner) >= 11)
-        {
-            await PowerCmd.Apply<VigorPower>(Owner, DynamicVars[nameof(VigorPower)].BaseValue, Owner, null);
-        }
+        if (player != Owner.Player)
+            return;
+
+        if (ChargeHandler.GetCharge(Owner) < 11)
+            return;
+
+        Flash();
+
+        await PowerCmd.Apply<VigorPower>(
+            choiceContext,
+            Owner,
+            Amount,
+            Owner,
+            null);
     }
 }

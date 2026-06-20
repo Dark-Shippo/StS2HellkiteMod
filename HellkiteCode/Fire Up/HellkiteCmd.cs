@@ -2,10 +2,8 @@
 using Hellkite.HellkiteCode.Powers;
 using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Commands;
-using MegaCrit.Sts2.Core.Entities.Cards;
-using MegaCrit.Sts2.Core.Entities.Creatures;    
+using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
-using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.ValueProps;
 
@@ -16,12 +14,17 @@ public static class HellkiteCmd
     public static async Task AttackTarget(
         PlayerChoiceContext choiceContext,
         HellkiteCard card,
-        Creature? target,
+        Creature target,
         decimal damage,
         int hits = 1)
     {
-        ArgumentNullException.ThrowIfNull(target);
-        await CreatureCmd.TriggerAnim(card.Owner.Creature, "Cast", card.Owner.Character.AttackAnimDelay);
+        if (damage <= 0M || hits <= 0)
+            return;
+
+        await CreatureCmd.TriggerAnim(
+            card.Owner.Creature,
+            "Cast",
+            card.Owner.Character.AttackAnimDelay);
 
         var attack = DamageCmd.Attack(damage)
             .FromCard(card)
@@ -32,18 +35,24 @@ public static class HellkiteCmd
         {
             attack = attack.WithHitCount(hits);
         }
-        
+
         await attack.Execute(choiceContext);
     }
 
     public static async Task AttackAll(
-        PlayerChoiceContext? choiceContext,
+        PlayerChoiceContext choiceContext,
         HellkiteCard? card,
         decimal damage)
     {
+        if (card != null && (damage <= 0M || card.CombatState == null))
+            return;
+
         if (card != null)
         {
-            await CreatureCmd.TriggerAnim(card.Owner.Creature, "Cast", card.Owner.Character.AttackAnimDelay);
+            await CreatureCmd.TriggerAnim(
+                card.Owner.Creature,
+                "Cast",
+                card.Owner.Character.AttackAnimDelay);
 
             if (card.CombatState != null)
                 await DamageCmd.Attack(damage)
@@ -54,87 +63,148 @@ public static class HellkiteCmd
         }
     }
 
-    public static async Task ApplyScorch(Creature target, decimal amount, Creature source, CardModel sourceCard)
+    public static async Task DamageAllEnemies(
+        PlayerChoiceContext choiceContext,
+        ICombatState combatState,
+        Creature source,
+        decimal damage,
+        ValueProp props = ValueProp.Unpowered,
+        CardModel? sourceCard = null)
     {
-        if (amount <= 0) return;
-        await PowerCmd.Apply<ScorchPower>(target, amount, source, sourceCard);
-    }
+        if (damage <= 0M)
+            return;
 
-    public static async Task ApplyScorchAll(CombatState combatState, decimal amount, Creature source, CardModel sourceCard)
-    {
-        if (amount <= 0) return;
-        foreach (var enemy in combatState.HittableEnemies)
+        // Snapshot the targets because damage may kill or remove creatures.
+        List<Creature> targets =
+            combatState.HittableEnemies.ToList();
+
+        foreach (Creature target in targets)
         {
-            await PowerCmd.Apply<ScorchPower>(enemy, amount, source, sourceCard);
+            await CreatureCmd.Damage(
+                choiceContext,
+                target,
+                damage,
+                props,
+                source,
+                sourceCard);
         }
     }
 
-    public static async Task TriggerScorchOnce(PlayerChoiceContext choiceContext, Creature target, Creature source, CardModel sourceCard)
+    public static async Task ApplyScorch(
+        Creature target,
+        decimal amount,
+        Creature source,
+        CardModel? sourceCard,
+        PlayerChoiceContext choiceContext)
     {
-        var scorch = target.GetPower<ScorchPower>();
-        if (scorch == null || scorch.Amount <= 0) return;
+        if (amount <= 0M)
+            return;
 
-        await CreatureCmd.Damage(
+        await PowerCmd.Apply<ScorchPower>(
             choiceContext,
             target,
-            scorch.Amount,
-            ValueProp.Unpowered | ValueProp.Unblockable,
+            amount,
             source,
             sourceCard);
+    }
 
-        if (target.IsAlive)
-        {
-            await PowerCmd.ModifyAmount(scorch, 1M, source, sourceCard);
-        }
+    public static async Task ApplyScorchAll(
+        ICombatState combatState,
+        decimal amount,
+        Creature source,
+        CardModel? sourceCard,
+        PlayerChoiceContext choiceContext)
+    {
+        if (amount <= 0M)
+            return;
+
+        List<Creature> targets =
+            combatState.HittableEnemies.ToList();
+
+        if (targets.Count == 0)
+            return;
+
+        await PowerCmd.Apply<ScorchPower>(
+            choiceContext,
+            targets,
+            amount,
+            source,
+            sourceCard);
+    }
+
+    public static async Task TriggerScorchOnce(
+        PlayerChoiceContext choiceContext,
+        Creature target,
+        Creature source,
+        CardModel? sourceCard)
+    {
+        ScorchPower? scorch =
+            target.GetPower<ScorchPower>();
+
+        if (scorch == null || scorch.Amount <= 0)
+            return;
+
+        await scorch.TriggerOnce(choiceContext, source, sourceCard);
     }
 
     public static Creature? RandomEnemy(Creature owner)
     {
-        if (owner is { CombatState: not null, Player: not null })
+        if (owner.CombatState == null ||
+            owner.Player == null)
         {
-            var enemies = owner.CombatState.HittableEnemies;
-            return enemies.Count == 0 ? null : owner.Player.RunState.Rng.CombatTargets.NextItem(enemies);
+            return null;
         }
-        return null;       
+
+        var enemies =
+            owner.CombatState.HittableEnemies;
+
+        return enemies.Count == 0
+            ? null
+            : owner.Player.RunState.Rng.CombatTargets.NextItem(enemies);
     }
 
-    public static async Task<int> RemoveAllRazorScales(Creature owner)
+    public static async Task<int> RemoveAllRazorScales(
+        Creature owner,
+        PlayerChoiceContext choiceContext)
     {
-        int current = owner.GetPowerAmount<RazorScalesPower>();
-        if (current <= 0) return 0;
+        RazorScalesPower? power =
+            owner.GetPower<RazorScalesPower>();
 
-        var power = owner.GetPower<RazorScalesPower>();
-        if (power != null)
-        {
-            await PowerCmd.ModifyAmount(power, -current, owner, null);
-        }
+        if (power == null || power.Amount <= 0)
+            return 0;
 
-        return current;
+        int amountRemoved = power.Amount;
+
+        await PowerCmd.ModifyAmount(
+            choiceContext,
+            power,
+            -amountRemoved,
+            owner,
+            null);
+
+        return amountRemoved;
     }
 
     public static async Task<int> SpendUpToCharge(
         Creature owner,
-        int maxAmount)
+        int maxAmount,
+        PlayerChoiceContext choiceContext)
     {
-        // For now leave as a full drain and wait for feedback
-        var chosen = Math.Min(maxAmount, ChargeHandler.GetCharge(owner));
-        if (chosen > 0)
-        {
-            await ChargeHandler.LoseCharge(owner, chosen);
-        }
-        return chosen;
-    }
-}
+        if (maxAmount <= 0)
+            return 0;
 
-public sealed class HellkiteVar(string name, decimal amount) : DynamicVar(name, amount)
-{
-    public override void UpdateCardPreview(
-        CardModel card,
-        CardPreviewMode previewMode,
-        Creature? target,
-        bool runGlobalHooks)
-    {
-        EnchantedValue = BaseValue;
-        PreviewValue = BaseValue;
+        int chosen = Math.Min(
+            maxAmount,
+            ChargeHandler.GetCharge(owner));
+
+        if (chosen <= 0)
+            return 0;
+
+        await ChargeHandler.LoseCharge(
+            owner,
+            chosen,
+            choiceContext);
+
+        return chosen;
     }
 }

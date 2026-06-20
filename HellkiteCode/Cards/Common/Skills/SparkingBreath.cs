@@ -16,8 +16,8 @@ public sealed class SparkingBreath() : HellkiteCard(0, CardType.Skill, CardRarit
     {
         if (play.Target != null)
             await HellkiteCmd.ApplyScorch(play.Target, DynamicVars[nameof(ScorchPower)].BaseValue, Owner.Creature,
-                this);
-        await ChargeHandler.GainCharge(Owner.Creature, DynamicVars[ChargeCostVar.DefaultName].BaseValue);
+                this, choiceContext);
+        await ChargeHandler.GainCharge(Owner.Creature, DynamicVars[ChargeCostVar.DefaultName].BaseValue, choiceContext);
     }
 
     protected override void OnUpgrade()

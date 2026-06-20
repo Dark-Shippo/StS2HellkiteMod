@@ -18,7 +18,7 @@ public sealed class BearDown() : HellkiteCard(0, CardType.Attack, CardRarity.Rar
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
-        await ChargeHandler.LoseCharge(Owner.Creature, DynamicVars[nameof(ChargeCostVar)].BaseValue);
+        await ChargeHandler.LoseCharge(Owner.Creature, DynamicVars[nameof(ChargeCostVar)].BaseValue, choiceContext);
         if (play.Target != null)
         {
             await DamageCmd.Attack(DynamicVars.Damage.BaseValue)
@@ -26,8 +26,12 @@ public sealed class BearDown() : HellkiteCard(0, CardType.Attack, CardRarity.Rar
                 .Targeting(play.Target)
                 .WithHitFx("vfx/vfx_attack_slash")
                 .Execute(choiceContext);
-            await HellkiteCmd.ApplyScorch(play.Target, DynamicVars[nameof(ScorchPower)].BaseValue, Owner.Creature,
-                this);
+            await HellkiteCmd.ApplyScorch(
+                play.Target, 
+                DynamicVars[nameof(ScorchPower)].BaseValue, 
+                Owner.Creature,
+                this, 
+                choiceContext);
         }
     }
     

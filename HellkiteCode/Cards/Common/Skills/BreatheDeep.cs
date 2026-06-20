@@ -18,7 +18,7 @@ public sealed class BreatheDeep() : HellkiteCard(1, CardType.Skill, CardRarity.C
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
         await CreatureCmd.GainBlock(Owner.Creature, DynamicVars.Block, play); 
-        await ChargeHandler.GainCharge(Owner.Creature, DynamicVars[ChargeCostVar.DefaultName].BaseValue);
+        await ChargeHandler.GainCharge(Owner.Creature, DynamicVars[ChargeCostVar.DefaultName].BaseValue, choiceContext);
     }
     
     protected override void OnUpgrade() => DynamicVars.Block.UpgradeValueBy(3M);

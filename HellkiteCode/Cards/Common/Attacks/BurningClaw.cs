@@ -27,7 +27,7 @@ public class BurningClaw() : HellkiteCard(1, CardType.Attack, CardRarity.Common,
                 .Execute(choiceContext);
 
             await HellkiteCmd.ApplyScorch(play.Target, DynamicVars[nameof(ScorchPower)].BaseValue, Owner.Creature,
-                this);
+                this, choiceContext);
         }
     }
 

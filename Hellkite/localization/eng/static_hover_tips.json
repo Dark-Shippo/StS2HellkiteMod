@@ -1,4 +1,6 @@
 {
   "HELLKITE-CHARGE.title": "Charge",
-  "HELLKITE-CHARGE.description": "Used to raise or lower [gold]Fired Up[/gold]. Skills usually gain Charge, and many scorching attacks spend it."
+  "HELLKITE-CHARGE.description": "Used to raise or lower [gold]Fired Up[/gold].",
+  "HELLKITE-SCORCH.title": "Scorch",
+  "HELLKITE-SCORCH.description": "Deal damage to enemies at the end of owners turn."
 }
