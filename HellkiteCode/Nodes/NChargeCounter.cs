@@ -1,15 +1,15 @@
 ﻿using BaseLib.Utils;
 using Godot;
-using MegaCrit.Sts2.Core.Nodes.Cards;
+using MegaCrit.Sts2.Core.Nodes.Combat;
 
-namespace Hellkite.HellkiteCode.Character;
+namespace Hellkite.HellkiteCode.Nodes;
 
-public partial class FireUpMeter : Control
+[GlobalClass]
+public partial class NChargeCounter : Control
 {
-    public static AddedNode<NCard, CardExtraCostDisplay> Node = new((card) =>
+    public static AddedNode<NEnergyCounter, NChargeCounter> Node = new(CustomEnergyCounter =>
     {
-        //would probably suggest loading from scene rather than this manual setup
-        var control = new CardExtraCostDisplay();
+        var control = new NChargeCounter();
         
         var tex = ResourceLoader.Load<Texture2D>("res://mod/images/image.png");
         

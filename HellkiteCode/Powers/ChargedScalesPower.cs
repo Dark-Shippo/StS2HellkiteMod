@@ -28,7 +28,7 @@ public sealed class ChargedScalesPower : HellkitePower
 
     public async Task AfterChargeGained(
         PlayerChoiceContext choiceContext,
-        int amount,
+        decimal amount,
         Player gainer)
     {
         if (amount <= 0)

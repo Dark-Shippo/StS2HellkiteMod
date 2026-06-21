@@ -16,7 +16,7 @@ public sealed class LavaBath() : HellkiteCard(0, CardType.Attack, CardRarity.Unc
     
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
-        int x = await HellkiteCmd.SpendUpToCharge(Owner.Creature, ChargeHandler.GetCharge(Owner.Creature), choiceContext);
+        decimal x = await HellkiteCmd.SpendUpToCharge(Owner.Creature, ChargeHandler.GetCharge(Owner.Creature), choiceContext);
         for (int i = 0; i < x; i++)
         {
             var target = HellkiteCmd.RandomEnemy(Owner.Creature);

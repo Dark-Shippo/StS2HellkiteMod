@@ -13,7 +13,7 @@ public sealed class WorldBreaker() : HellkiteCard(2, CardType.Attack, CardRarity
     
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
-        int spent = await ChargeHandler.SpendAllCharge(Owner.Creature, choiceContext);
+        decimal spent = await ChargeHandler.SpendAllCharge(Owner.Creature, choiceContext);
         await HellkiteCmd.AttackAll(choiceContext, this, DynamicVars.Damage.BaseValue);
         if (spent > 0)
             if (CombatState != null)

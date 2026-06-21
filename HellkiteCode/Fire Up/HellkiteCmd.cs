@@ -185,15 +185,15 @@ public static class HellkiteCmd
         return amountRemoved;
     }
 
-    public static async Task<int> SpendUpToCharge(
+    public static async Task<decimal> SpendUpToCharge(
         Creature owner,
-        int maxAmount,
+        decimal maxAmount,
         PlayerChoiceContext choiceContext)
     {
         if (maxAmount <= 0)
             return 0;
 
-        int chosen = Math.Min(
+        decimal chosen = Math.Min(
             maxAmount,
             ChargeHandler.GetCharge(owner));
 

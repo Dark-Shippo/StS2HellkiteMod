@@ -9,11 +9,11 @@ namespace Hellkite.HellkiteCode.Fire_Up;
 
 public abstract class ChargeHandler
 {
-    private sealed class ChargeState(int chargeSpentThisTurn)
+    private sealed class ChargeState(decimal chargeSpentThisTurn)
     {
-        public int CurrentCharge;
-        public int ChargeGainedThisTurn;
-        public readonly int ChargeSpentThisTurn = chargeSpentThisTurn;
+        public decimal CurrentCharge;
+        public decimal ChargeGainedThisTurn;
+        public decimal ChargeSpentThisTurn = chargeSpentThisTurn;
         public bool Threshold1Reached;
         public bool Threshold2Reached;
     }
@@ -22,9 +22,9 @@ public abstract class ChargeHandler
 
     private static ChargeState GetState(Creature creature) => States.GetOrCreateValue(creature);
 
-    public static int GetCharge(Creature creature) => GetState(creature).CurrentCharge;
-    public static int GetChargeGainedThisTurn(Creature creature) => GetState(creature).ChargeGainedThisTurn;
-    public static int GetChargeSpentThisTurn(Creature creature) => GetState(creature).ChargeSpentThisTurn;
+    public static decimal GetCharge(Creature creature) => GetState(creature).CurrentCharge;
+    public static decimal GetChargeGainedThisTurn(Creature creature) => GetState(creature).ChargeGainedThisTurn;
+    public static decimal GetChargeSpentThisTurn(Creature creature) => GetState(creature).ChargeSpentThisTurn;
     public static bool HasSpentChargeThisTurn(Creature creature) => GetChargeSpentThisTurn(creature) > 0;
 
     public static async Task GainCharge(Creature creature, decimal amount, PlayerChoiceContext choiceContext)
@@ -32,9 +32,9 @@ public abstract class ChargeHandler
         if (amount <= 0) return;
 
         var state = GetState(creature);
-        int oldCharge = state.CurrentCharge;
+        decimal oldCharge = state.CurrentCharge;
         state.CurrentCharge = Math.Min(30, state.CurrentCharge + (int)amount);
-        int gained = state.CurrentCharge - oldCharge;
+        decimal gained = state.CurrentCharge - oldCharge;
         if (gained <= 0) return;
 
         state.ChargeGainedThisTurn += gained;
@@ -72,22 +72,23 @@ public abstract class ChargeHandler
     public static async Task LoseCharge(Creature creature, decimal amount, PlayerChoiceContext choiceContext)
     {
         Player? player = creature.Player;
-
+        ChargeState state = GetState(creature);
         if (player != null)
         {
-                ChargedScalesPower ? chargedScales = creature.GetPower<ChargedScalesPower>();
-        if (chargedScales != null)
-        {
-            await chargedScales.AfterChargeSpent(choiceContext, amount, player);
-        }
+            ChargedScalesPower? chargedScales = creature.GetPower<ChargedScalesPower>();
+            if (chargedScales != null)
+            {
+                await chargedScales.AfterChargeSpent(choiceContext, amount, player);
+            }
 
-        TemperPower? temper = creature.GetPower<TemperPower>();
-        if (temper != null)
-        {
-            await temper.AfterChargeSpent(choiceContext, amount, player);
+            TemperPower? temper = creature.GetPower<TemperPower>();
+            if (temper != null)
+            {
+                await temper.AfterChargeSpent(choiceContext, amount, player);
+            }
+            state.CurrentCharge = Math.Max(0, state.CurrentCharge - (int)amount);
         }
     }
-}
 
     public static async Task<bool> TrySpendCharge(Creature creature, decimal amount, PlayerChoiceContext choiceContext)
     {
@@ -95,9 +96,9 @@ public abstract class ChargeHandler
         await LoseCharge( creature, amount, choiceContext); return true;
     }
 
-    public static async Task<int> SpendAllCharge(Creature creature, PlayerChoiceContext choiceContext)
+    public static async Task<decimal> SpendAllCharge(Creature creature, PlayerChoiceContext choiceContext)
     {
-        int current = GetCharge(creature); if (current > 0) { await LoseCharge( creature, current, choiceContext); } 
+        decimal current = GetCharge(creature); if (current > 0) { await LoseCharge( creature, current, choiceContext); } 
         return current;
     }
 }

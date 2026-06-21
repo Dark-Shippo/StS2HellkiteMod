@@ -19,7 +19,7 @@ public sealed class QuenchTheHeart() : HellkiteCard(1, CardType.Skill, CardRarit
     
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
-        int spent = await ChargeHandler.SpendAllCharge(Owner.Creature, choiceContext);
+        decimal spent = await ChargeHandler.SpendAllCharge(Owner.Creature, choiceContext);
         await CreatureCmd.GainBlock(Owner.Creature, DynamicVars.Block, play);
         if (spent > 0) await PowerCmd.Apply<PlatingPower>(choiceContext, Owner.Creature, Math.Floor(spent / 2M), Owner.Creature, this);
         await CardPileCmd.Draw(choiceContext, DynamicVars.Cards.IntValue, Owner);
