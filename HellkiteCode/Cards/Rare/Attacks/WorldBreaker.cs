@@ -1,4 +1,7 @@
-﻿using Hellkite.HellkiteCode.Fire_Up;
+﻿using Hellkite.HellkiteCode.Commands;
+using Hellkite.HellkiteCode.Extensions;
+using Hellkite.HellkiteCode.Fire_Up;
+using Hellkite.HellkiteCode.Structs;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
@@ -13,11 +16,15 @@ public sealed class WorldBreaker() : HellkiteCard(2, CardType.Attack, CardRarity
     
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
-        decimal spent = await ChargeHandler.SpendAllCharge(Owner.Creature, choiceContext);
-        await HellkiteCmd.AttackAll(choiceContext, this, DynamicVars.Damage.BaseValue);
-        if (spent > 0)
-            if (CombatState != null)
-                await HellkiteCmd.ApplyScorchAll(CombatState, spent, Owner.Creature, this, choiceContext);
+        var pool = Owner.PlayerCombatState?.GetFireUp() ?? new FireUp();
+        var spent = pool.Total;
+        await SpendFireUp(pool);
+        
+        for (var i = 0; i < spent; i++)
+            await HellkiteCmd.AttackAll(choiceContext, this, DynamicVars.Damage.BaseValue);
+        
+        if (spent > 0 && CombatState != null)
+            await HellkiteCmd.ApplyScorchAll(CombatState, spent, Owner.Creature, this, choiceContext);
     }
     
     protected override void OnUpgrade() => DynamicVars.Damage.UpgradeValueBy(1M);

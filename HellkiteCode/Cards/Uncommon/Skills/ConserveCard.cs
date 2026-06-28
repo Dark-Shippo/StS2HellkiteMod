@@ -12,17 +12,17 @@ public sealed class ConserveCard() : HellkiteCard(1, CardType.Skill, CardRarity.
     protected override IEnumerable<DynamicVar> CanonicalVars => 
         [
             new EnergyVar(1),
-            new PowerVar<ChargeNextTurnPower>(1M)
+            new PowerVar<FireUpNextTurnPower>(1M)
         ];
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
         await PowerCmd.Apply<EnergyNextTurnPower>(choiceContext, Owner.Creature, DynamicVars.Energy.BaseValue, Owner.Creature, this);
-        await PowerCmd.Apply<ChargeNextTurnPower>(choiceContext, Owner.Creature, DynamicVars[nameof(ChargeNextTurnPower)].BaseValue, Owner.Creature, this);
+        await PowerCmd.Apply<FireUpNextTurnPower>(choiceContext, Owner.Creature, DynamicVars[nameof(FireUpNextTurnPower)].BaseValue, Owner.Creature, this);
     }
 
     protected override void OnUpgrade()
     {
-        DynamicVars[nameof(ChargeNextTurnPower)].UpgradeValueBy(1M);
+        DynamicVars[nameof(FireUpNextTurnPower)].UpgradeValueBy(1M);
     }
 }

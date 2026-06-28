@@ -1,5 +1,9 @@
-﻿using Hellkite.HellkiteCode.Fire_Up;
+﻿using BaseLib.Extensions;
+using Hellkite.HellkiteCode.Commands;
+using Hellkite.HellkiteCode.DynamicVars;
+using Hellkite.HellkiteCode.Fire_Up;
 using Hellkite.HellkiteCode.Powers;
+using Hellkite.HellkiteCode.Structs;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
@@ -11,23 +15,18 @@ namespace Hellkite.HellkiteCode.Cards.Common.Attacks;
 
 public sealed class Flameblade() : HellkiteCard(1, CardType.Attack, CardRarity.Common, TargetType.AnyEnemy)
 {
-    protected override IEnumerable<DynamicVar> CanonicalVars
-    {
-        get
-        {
-            var chargeCostVar = new ChargeCostVar(1M);
-            return
-            [
-                new DamageVar(6M, ValueProp.Move),
-                new PowerVar<VigorPower>(2M),
-                chargeCostVar
-            ];
-        }
-    }
+    protected override IEnumerable<DynamicVar> CanonicalVars =>
+    [
+        //new ChargeCostVar(1),
+        new DamageVar(6M, ValueProp.Move),
+        new PowerVar<VigorPower>(2M)
+    ];
+
+    public override FireUp CanonicalFireUpCost => new(1);
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
-        await ChargeHandler.LoseCharge(Owner.Creature, DynamicVars[nameof(ChargeCostVar)].BaseValue, choiceContext);
+        //await ChargeHandler.LoseCharge(Owner.Creature, DynamicVars[ChargeCostVar.DefaultName].IntValue, choiceContext);
         if (play.Target != null)
         {
             await DamageCmd.Attack(DynamicVars.Damage.BaseValue)
@@ -40,7 +39,7 @@ public sealed class Flameblade() : HellkiteCard(1, CardType.Attack, CardRarity.C
                     Owner.Creature, this);
         }
     }
-
+    
     protected override void OnUpgrade()
     {
         DynamicVars.Damage.UpgradeValueBy(2M); 

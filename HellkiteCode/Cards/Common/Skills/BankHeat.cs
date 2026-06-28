@@ -1,4 +1,8 @@
-﻿using Hellkite.HellkiteCode.Fire_Up;
+﻿using BaseLib.Extensions;
+using Hellkite.HellkiteCode.Commands;
+using Hellkite.HellkiteCode.DynamicVars;
+using Hellkite.HellkiteCode.Fire_Up;
+using Hellkite.HellkiteCode.Structs;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
@@ -13,13 +17,15 @@ public sealed class BankHeat() : HellkiteCard(0, CardType.Skill, CardRarity.Comm
     
     protected override IEnumerable<DynamicVar> CanonicalVars => 
         [
-            new ChargeCostVar(2M), 
+            //new ChargeCostVar(2), 
+            new FireUpVar(2).WithUpgrade(1),
             new BlockVar(8M, ValueProp.Move)
         ];
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
-        await ChargeHandler.GainCharge(Owner.Creature, DynamicVars[ChargeCostVar.DefaultName].BaseValue, choiceContext); 
+        await HellkitePlayerCmd.GainFireUp(new FireUp(this), Owner, play);
+        //await ChargeHandler.GainCharge(Owner.Creature, DynamicVars[ChargeCostVar.DefaultName].IntValue, choiceContext); 
         await CreatureCmd.GainBlock(Owner.Creature, DynamicVars.Block, play);
     }
     protected override void OnUpgrade() => DynamicVars.Block.UpgradeValueBy(3M);

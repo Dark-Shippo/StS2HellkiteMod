@@ -1,4 +1,5 @@
 ﻿using Hellkite.HellkiteCode.Fire_Up;
+using Hellkite.HellkiteCode.Structs;
 using MegaCrit.Sts2.Core.CardSelection;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
@@ -14,7 +15,10 @@ public sealed class Again() : HellkiteCard(0, CardType.Attack, CardRarity.Rare, 
     protected override IEnumerable<DynamicVar> CanonicalVars => [
         new DamageVar(20M, ValueProp.Move), 
         new RepeatVar(2),
-        new ChargeCostVar(6M)];
+        //new ChargeCostVar(6)
+    ];
+
+    public override FireUp CanonicalFireUpCost => new(6);
 
     public override IEnumerable<CardKeyword> CanonicalKeywords =>
     [
@@ -23,7 +27,7 @@ public sealed class Again() : HellkiteCard(0, CardType.Attack, CardRarity.Rare, 
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
-        await ChargeHandler.LoseCharge(Owner.Creature, DynamicVars[nameof(ChargeCostVar)].BaseValue, choiceContext);
+        //await ChargeHandler.LoseCharge(Owner.Creature, DynamicVars[ChargeCostVar.DefaultName].IntValue, choiceContext);
         if (play.Target != null)
             await DamageCmd.Attack(DynamicVars.Damage.BaseValue)
                 .FromCard(this)
@@ -44,7 +48,7 @@ public sealed class Again() : HellkiteCard(0, CardType.Attack, CardRarity.Rare, 
                 await CardCmd.AutoPlay(choiceContext, card, null);
         }
     }
-
+    
     protected override void OnUpgrade()
     {
         DynamicVars.Damage.UpgradeValueBy(6M); 

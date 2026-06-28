@@ -1,12 +1,14 @@
-﻿using Hellkite.HellkiteCode.Fire_Up;
+﻿using Hellkite.HellkiteCode.Commands;
+using Hellkite.HellkiteCode.Structs;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Entities.Powers;
-using MegaCrit.Sts2.Core.GameActions.Multiplayer;
+using MegaCrit.Sts2.Core.Models;
+using MegaCrit.Sts2.Core.Models.Powers;
 
 namespace Hellkite.HellkiteCode.Powers;
 
-public sealed class ChargeNextTurnPower : HellkitePower
+public sealed class FireUpNextTurnPower : HellkitePower
 {
     public override PowerType Type => PowerType.Buff;
 
@@ -16,12 +18,7 @@ public sealed class ChargeNextTurnPower : HellkitePower
     {
         if (player != Owner.Player)
             return;
-
-        await ChargeHandler.GainCharge(
-            Owner,
-            Amount,
-            new ThrowingPlayerChoiceContext());
-
+        await HellkitePlayerCmd.GainFireUp(new FireUp(Amount), player, null);
         await PowerCmd.Remove(this);
     }
 }

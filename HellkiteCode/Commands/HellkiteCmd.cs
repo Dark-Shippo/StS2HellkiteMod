@@ -1,4 +1,5 @@
 ﻿using Hellkite.HellkiteCode.Cards;
+using Hellkite.HellkiteCode.Fire_Up;
 using Hellkite.HellkiteCode.Powers;
 using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Commands;
@@ -7,38 +8,10 @@ using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.ValueProps;
 
-namespace Hellkite.HellkiteCode.Fire_Up;
+namespace Hellkite.HellkiteCode.Commands;
 
 public static class HellkiteCmd
 {
-    public static async Task AttackTarget(
-        PlayerChoiceContext choiceContext,
-        HellkiteCard card,
-        Creature target,
-        decimal damage,
-        int hits = 1)
-    {
-        if (damage <= 0M || hits <= 0)
-            return;
-
-        await CreatureCmd.TriggerAnim(
-            card.Owner.Creature,
-            "Cast",
-            card.Owner.Character.AttackAnimDelay);
-
-        var attack = DamageCmd.Attack(damage)
-            .FromCard(card)
-            .Targeting(target)
-            .WithHitFx("vfx/vfx_attack_slash");
-
-        if (hits > 1)
-        {
-            attack = attack.WithHitCount(hits);
-        }
-
-        await attack.Execute(choiceContext);
-    }
-
     public static async Task AttackAll(
         PlayerChoiceContext choiceContext,
         HellkiteCard? card,
@@ -183,28 +156,5 @@ public static class HellkiteCmd
             null);
 
         return amountRemoved;
-    }
-
-    public static async Task<decimal> SpendUpToCharge(
-        Creature owner,
-        decimal maxAmount,
-        PlayerChoiceContext choiceContext)
-    {
-        if (maxAmount <= 0)
-            return 0;
-
-        decimal chosen = Math.Min(
-            maxAmount,
-            ChargeHandler.GetCharge(owner));
-
-        if (chosen <= 0)
-            return 0;
-
-        await ChargeHandler.LoseCharge(
-            owner,
-            chosen,
-            choiceContext);
-
-        return chosen;
     }
 }

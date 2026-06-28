@@ -1,4 +1,5 @@
 ﻿using Hellkite.HellkiteCode.Fire_Up;
+using Hellkite.HellkiteCode.Structs;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
@@ -11,8 +12,11 @@ public sealed class Refuel() : HellkiteCard(0, CardType.Skill, CardRarity.Uncomm
     
     protected override IEnumerable<DynamicVar> CanonicalVars => [
         new EnergyVar(2),
-        new ChargeCostVar(3)
+        //new ChargeCostVar(3)
     ];
+    
+    public override FireUp CanonicalFireUpCost => new(3);
+
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay pl)
     {

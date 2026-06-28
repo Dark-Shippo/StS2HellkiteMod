@@ -1,4 +1,6 @@
-﻿using Hellkite.HellkiteCode.Fire_Up;
+﻿using Hellkite.HellkiteCode.Extensions;
+using Hellkite.HellkiteCode.Fire_Up;
+using Hellkite.HellkiteCode.Structs;
 using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Creatures;
@@ -26,7 +28,8 @@ public sealed class ScaleMailPower : HellkitePower
         if (!participants.Contains(Owner))
             return;
 
-        if (ChargeHandler.GetCharge(Owner) > 10)
+        var fireUp = Owner.Player?.PlayerCombatState?.GetFireUp() ?? new FireUp();
+        if (fireUp.Total > 10)
             return;
 
         Flash();

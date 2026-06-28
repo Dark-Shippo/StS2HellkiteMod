@@ -1,4 +1,7 @@
-﻿using Hellkite.HellkiteCode.Fire_Up;
+﻿using Hellkite.HellkiteCode.Commands;
+using Hellkite.HellkiteCode.Fire_Up;
+using Hellkite.HellkiteCode.Structs;
+using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
@@ -10,17 +13,22 @@ public sealed class WatchThemRun() : HellkiteCard(1, CardType.Attack, CardRarity
 {
     protected override IEnumerable<DynamicVar> CanonicalVars => [
         new DamageVar(10M, ValueProp.Move),
-        new ChargeCostVar(2M)
+        //new ChargeCostVar(2)
     ];
+    
+    public override FireUp CanonicalFireUpCost => new(2);
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
-        await ChargeHandler.LoseCharge(Owner.Creature, DynamicVars[nameof(ChargeCostVar)].BaseValue, choiceContext);
+        //await ChargeHandler.LoseCharge(Owner.Creature, DynamicVars[ChargeCostVar.DefaultName].IntValue, choiceContext);
 
         if (play.Target != null)
         {
-            await HellkiteCmd.AttackTarget(choiceContext, this, play.Target, DynamicVars.Damage.BaseValue);
-            if (play.Target != null)
+            await DamageCmd.Attack(DynamicVars.Damage.BaseValue)
+                .FromCard(this)
+                .Targeting(play.Target)
+                .WithHitFx("vfx/vfx_attack_slash")
+                .Execute(choiceContext);            if (play.Target != null)
                 await HellkiteCmd.TriggerScorchOnce(choiceContext, play.Target, Owner.Creature, this);
         }
     }

@@ -1,5 +1,7 @@
-﻿using Hellkite.HellkiteCode.Fire_Up;
+﻿using Hellkite.HellkiteCode.Commands;
+using Hellkite.HellkiteCode.Fire_Up;
 using Hellkite.HellkiteCode.Powers;
+using Hellkite.HellkiteCode.Structs;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
@@ -13,12 +15,14 @@ public sealed class BearDown() : HellkiteCard(0, CardType.Attack, CardRarity.Rar
     protected override IEnumerable<DynamicVar> CanonicalVars => [
         new DamageVar(40M, ValueProp.Move), 
         new PowerVar<ScorchPower>(12M),
-        new ChargeCostVar(5M)
+        //new ChargeCostVar(5)
     ];
+
+    public override FireUp CanonicalFireUpCost => new(5);
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
-        await ChargeHandler.LoseCharge(Owner.Creature, DynamicVars[nameof(ChargeCostVar)].BaseValue, choiceContext);
+        //await ChargeHandler.LoseCharge(Owner.Creature, DynamicVars[ChargeCostVar.DefaultName].IntValue, choiceContext);
         if (play.Target != null)
         {
             await DamageCmd.Attack(DynamicVars.Damage.BaseValue)

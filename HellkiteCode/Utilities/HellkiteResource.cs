@@ -1,0 +1,25 @@
+﻿using Godot;
+using Hellkite.HellkiteCode.Extensions;
+
+namespace Hellkite.HellkiteCode.Utilities;
+
+public static class HellkiteResource
+{
+    public static Texture2D FireUpIcon =>
+        ResourceLoader.Load<Texture2D>("res://Hellkite/images/charui/fireup_all_icon.png");
+    
+    public const string NFireUpCounterPath = "res://Hellkite/scenes/combat/energy_counters/fireup_counter.tscn";
+    public const string NFireUpIconPath = "res://Hellkite/scenes/cards/fireup_icon.tscn";
+    public const string NCreatureVisualsHellkitePath = "res://Hellkite/scenes/creature_visuals/hellkite.tscn";
+
+    public const string NCharSelectBgHellkitePath =
+        "res://Hellkite/scenes/screens/char_select/char_select_bg_hellkite.tscn";
+
+    // These assets will be loaded with PreloadManager
+    public static readonly IEnumerable<string> AssetPaths =
+    [
+        NFireUpCounterPath, NFireUpIconPath, NCreatureVisualsHellkitePath,
+        NCharSelectBgHellkitePath,
+        "fireup_charge_icon.png".CharacterUiPath().ToRes(),
+    ];
+}

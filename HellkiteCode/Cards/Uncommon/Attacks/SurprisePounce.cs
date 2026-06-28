@@ -1,4 +1,8 @@
-﻿using Hellkite.HellkiteCode.Fire_Up;
+﻿using BaseLib.Extensions;
+using Hellkite.HellkiteCode.Commands;
+using Hellkite.HellkiteCode.DynamicVars;
+using Hellkite.HellkiteCode.Fire_Up;
+using Hellkite.HellkiteCode.Structs;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
@@ -11,8 +15,10 @@ public sealed class SurprisePounce() : HellkiteCard(0, CardType.Attack, CardRari
 {
     protected override IEnumerable<DynamicVar> CanonicalVars => [
         new DamageVar(4M, ValueProp.Move), 
-        new ChargeCostVar(1M), 
-        new CardsVar(1)];
+        new FireUpVar(1).WithUpgrade(1),
+        //new ChargeCostVar(1), 
+        new CardsVar(1)
+    ];
     
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
@@ -26,7 +32,8 @@ public sealed class SurprisePounce() : HellkiteCard(0, CardType.Attack, CardRari
         if (!FirstAttack) return;
         if (FirstAttack)
         {
-            await ChargeHandler.GainCharge(Owner.Creature, DynamicVars[ChargeCostVar.DefaultName].BaseValue, choiceContext);
+            await HellkitePlayerCmd.GainFireUp(new FireUp(this), Owner, play);
+            //await ChargeHandler.GainCharge(Owner.Creature, DynamicVars[ChargeCostVar.DefaultName].IntValue, choiceContext);
             await CardPileCmd.Draw(choiceContext, DynamicVars.Cards.IntValue, Owner);
         }
     }
@@ -34,6 +41,6 @@ public sealed class SurprisePounce() : HellkiteCard(0, CardType.Attack, CardRari
     protected override void OnUpgrade()
     {
         DynamicVars.Damage.UpgradeValueBy(3M); 
-        DynamicVars[ChargeCostVar.DefaultName].UpgradeValueBy(1M);
+        //DynamicVars[ChargeCostVar.DefaultName].UpgradeValueBy(1M);
     }
 }

@@ -1,4 +1,8 @@
-﻿using Hellkite.HellkiteCode.Fire_Up;
+﻿using BaseLib.Extensions;
+using Hellkite.HellkiteCode.Commands;
+using Hellkite.HellkiteCode.DynamicVars;
+using Hellkite.HellkiteCode.Fire_Up;
+using Hellkite.HellkiteCode.Structs;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
@@ -11,7 +15,10 @@ public sealed class DrainEnergy() : HellkiteCard(1, CardType.Attack, CardRarity.
 {
     protected override IEnumerable<DynamicVar> CanonicalVars => 
         [
-            new DamageVar(8M, ValueProp.Move), new ChargeCostVar(1M)
+            new DamageVar(8M, ValueProp.Move), 
+            //new ChargeCostVar(1)
+            new FireUpVar(1).WithUpgrade(1)
+
         ];
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
@@ -23,12 +30,13 @@ public sealed class DrainEnergy() : HellkiteCard(1, CardType.Attack, CardRarity.
                 .WithHitFx("vfx/vfx_attack_slash")
                 .Execute(choiceContext);
 
-        await ChargeHandler.GainCharge(Owner.Creature, DynamicVars[ChargeCostVar.DefaultName].BaseValue, choiceContext);
+        await HellkitePlayerCmd.GainFireUp(new FireUp(this), Owner, play);
+        //await ChargeHandler.GainCharge(Owner.Creature, DynamicVars[ChargeCostVar.DefaultName].IntValue, choiceContext);
     }
 
     protected override void OnUpgrade()
     {
         DynamicVars.Damage.UpgradeValueBy(2M); 
-        DynamicVars[ChargeCostVar.DefaultName].UpgradeValueBy(1M);
+        //DynamicVars[ChargeCostVar.DefaultName].UpgradeValueBy(1M);
     }
 }

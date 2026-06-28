@@ -1,4 +1,8 @@
-﻿using Hellkite.HellkiteCode.Fire_Up;
+﻿using Hellkite.HellkiteCode.Commands;
+using Hellkite.HellkiteCode.Fire_Up;
+using Hellkite.HellkiteCode.Hooks;
+using Hellkite.HellkiteCode.Structs;
+using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Entities.Powers;
@@ -6,12 +10,13 @@ using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 
 namespace Hellkite.HellkiteCode.Powers;
 
-public sealed class ChargedScalesPower : HellkitePower
+public sealed class ChargedScalesPower : HellkitePower, IAfterFireUpGained, IAfterFireUpSpent
 {
     public override PowerType Type => PowerType.Buff;
 
-    public override PowerStackType StackType =>
-        PowerStackType.Counter;
+    public override PowerStackType StackType => PowerStackType.Counter;
+
+    protected override object InitInternalData() => new Data();
 
     public override async Task AfterCardPlayed(
         PlayerChoiceContext choiceContext,
@@ -20,38 +25,53 @@ public sealed class ChargedScalesPower : HellkitePower
         if (cardPlay.Card.Owner != Owner.Player)
             return;
 
+        await FlushPendingHits(choiceContext);
+
         if (!cardPlay.IsLastInSeries)
             return;
 
         await DealDamageToAllEnemies(choiceContext);
     }
 
-    public async Task AfterChargeGained(
-        PlayerChoiceContext choiceContext,
-        decimal amount,
-        Player gainer)
+    // Gain hook — no context, so record and flush later.
+    public Task AfterFireUpGained(
+        ICombatState combatState,
+        FireUp amount,
+        Player player,
+        CardPlay? cardPlay)
     {
-        if (amount <= 0)
-            return;
+        if (amount.Total <= 0)
+            return Task.CompletedTask;
 
-        if (gainer != Owner.Player)
-            return;
+        if (player != Owner.Player)
+            return Task.CompletedTask;
 
-        await DealDamageToAllEnemies(choiceContext);
+        GetInternalData<Data>().pendingHits++;
+        return Task.CompletedTask;
     }
 
-    public async Task AfterChargeSpent(
-        PlayerChoiceContext choiceContext,
-        decimal amount,
-        Player spender)
+    // Spend hook — no context, so record and flush later.
+    public Task AfterFireUpSpent(FireUp amount, Player spender)
     {
-        if (amount <= 0)
-            return;
+        if (amount.Total <= 0)
+            return Task.CompletedTask;
 
         if (spender != Owner.Player)
-            return;
+            return Task.CompletedTask;
 
-        await DealDamageToAllEnemies(choiceContext);
+        GetInternalData<Data>().pendingHits++;
+        return Task.CompletedTask;
+    }
+
+    private async Task FlushPendingHits(PlayerChoiceContext choiceContext)
+    {
+        Data data = GetInternalData<Data>();
+
+        while (data.pendingHits > 0)
+        {
+            data.pendingHits--;
+            await DealDamageToAllEnemies(choiceContext);
+        }
     }
 
     private async Task DealDamageToAllEnemies(
@@ -70,5 +90,10 @@ public sealed class ChargedScalesPower : HellkitePower
             CombatState,
             Owner,
             Amount);
+    }
+
+    private sealed class Data
+    {
+        public int pendingHits;
     }
 }

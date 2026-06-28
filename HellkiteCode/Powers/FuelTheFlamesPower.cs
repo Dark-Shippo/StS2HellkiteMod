@@ -1,4 +1,6 @@
-﻿using Hellkite.HellkiteCode.Fire_Up;
+﻿using Hellkite.HellkiteCode.Extensions;
+using Hellkite.HellkiteCode.Fire_Up;
+using Hellkite.HellkiteCode.Structs;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Entities.Powers;
@@ -21,7 +23,8 @@ public sealed class FuelTheFlamesPower : HellkitePower
         if (player != Owner.Player)
             return;
 
-        if (ChargeHandler.GetCharge(Owner) < 11)
+        var fireUp = player.PlayerCombatState?.GetFireUp() ?? new FireUp();
+        if (fireUp.Total < 11)
             return;
 
         Flash();

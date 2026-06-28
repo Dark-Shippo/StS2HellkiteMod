@@ -1,5 +1,9 @@
-﻿using Hellkite.HellkiteCode.Fire_Up;
+﻿using BaseLib.Extensions;
+using Hellkite.HellkiteCode.Commands;
+using Hellkite.HellkiteCode.DynamicVars;
+using Hellkite.HellkiteCode.Fire_Up;
 using Hellkite.HellkiteCode.Powers;
+using Hellkite.HellkiteCode.Structs;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
@@ -11,12 +15,15 @@ public sealed class SharpenScales() : HellkiteCard(1, CardType.Skill, CardRarity
 {
     protected override IEnumerable<DynamicVar> CanonicalVars => [
         new PowerVar<RazorScalesPower>(2M), 
-        new ChargeCostVar(1M)];
+        //new ChargeCostVar(1)
+        new FireUpVar(1).WithUpgrade(1)
+    ];
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
         await PowerCmd.Apply<RazorScalesPower>(choiceContext, Owner.Creature, DynamicVars[nameof(RazorScalesPower)].BaseValue, Owner.Creature, this); 
-        await ChargeHandler.GainCharge(Owner.Creature, DynamicVars[ChargeCostVar.DefaultName].BaseValue, choiceContext);
+        await HellkitePlayerCmd.GainFireUp(new FireUp(this), Owner, play);
+        //await ChargeHandler.GainCharge(Owner.Creature, DynamicVars[ChargeCostVar.DefaultName].IntValue, choiceContext);
     }
     
     protected override void OnUpgrade() => DynamicVars[nameof(RazorScalesPower)].UpgradeValueBy(1M);

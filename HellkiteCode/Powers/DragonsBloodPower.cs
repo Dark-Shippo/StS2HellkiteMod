@@ -1,4 +1,6 @@
-﻿using Hellkite.HellkiteCode.Fire_Up;
+﻿using Hellkite.HellkiteCode.Commands;
+using Hellkite.HellkiteCode.Fire_Up;
+using Hellkite.HellkiteCode.Structs;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Entities.Powers;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
@@ -21,9 +23,7 @@ public sealed class DragonsBloodPower : HellkitePower
 
         Flash();
 
-        await ChargeHandler.GainCharge(
-            Owner,
-            Amount,
-            choiceContext);
+        await HellkitePlayerCmd.GainFireUp(new FireUp(Amount), Owner.Player);
+
     }
 }

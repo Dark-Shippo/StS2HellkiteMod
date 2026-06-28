@@ -1,5 +1,6 @@
 ﻿using Hellkite.HellkiteCode.Fire_Up;
 using Hellkite.HellkiteCode.Powers;
+using Hellkite.HellkiteCode.Structs;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
@@ -11,12 +12,14 @@ public sealed class FuelOnYourPyreCard() : HellkiteCard(1, CardType.Skill, CardR
 {
     protected override IEnumerable<DynamicVar> CanonicalVars => [
         new PowerVar<ScorchPower>(6M),
-        new ChargeCostVar(2M)
+        //new ChargeCostVar(2)
     ];
+    
+    public override FireUp CanonicalFireUpCost => new(2);
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
-        await ChargeHandler.LoseCharge(Owner.Creature, DynamicVars[nameof(ChargeCostVar)].BaseValue, choiceContext);
+        //await ChargeHandler.LoseCharge(Owner.Creature, DynamicVars[ChargeCostVar.DefaultName].IntValue, choiceContext);
 
         if (play.Target != null)
         {
@@ -41,7 +44,7 @@ public sealed class FuelOnYourPyreCard() : HellkiteCard(1, CardType.Skill, CardR
             }
         }
     }
-
+    
     protected override void OnUpgrade()
     {
         DynamicVars[nameof(ScorchPower)].UpgradeValueBy(4M);

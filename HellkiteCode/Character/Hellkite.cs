@@ -21,8 +21,6 @@ public class Hellkite : PlaceholderCharacterModel
     
     public override int StartingHp => 75;
     
-    public override int StartingGold => 99;
-    
     public override IEnumerable<CardModel> StartingDeck =>
     [
         ModelDb.Card<StrikeHellkite>(),

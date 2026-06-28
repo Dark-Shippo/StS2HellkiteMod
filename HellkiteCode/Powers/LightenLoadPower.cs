@@ -1,4 +1,6 @@
-﻿using Hellkite.HellkiteCode.Fire_Up;
+﻿using Hellkite.HellkiteCode.Extensions;
+using Hellkite.HellkiteCode.Fire_Up;
+using Hellkite.HellkiteCode.Structs;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Powers;
 using MegaCrit.Sts2.Core.Entities.Players;
@@ -13,9 +15,8 @@ public sealed class LightenLoadPower : HellkitePower
 
     public override async Task AfterEnergyReset(Player player)
     {
-        if (ChargeHandler.GetCharge(Owner) >= 21)
-        {
+        var fireUp = player.PlayerCombatState?.GetFireUp() ?? new FireUp();
+        if (fireUp.Total > 21)
             await PlayerCmd.GainEnergy(Amount, player);
-        }
     }
 }

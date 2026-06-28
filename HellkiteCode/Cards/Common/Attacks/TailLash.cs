@@ -1,4 +1,5 @@
-﻿using Hellkite.HellkiteCode.Fire_Up;
+﻿using Hellkite.HellkiteCode.Commands;
+using Hellkite.HellkiteCode.Fire_Up;
 using Hellkite.HellkiteCode.Powers;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
@@ -25,8 +26,8 @@ public sealed class TailLash() : HellkiteCard(1, CardType.Attack, CardRarity.Com
                 .Targeting(play.Target)
                 .WithHitFx("vfx/vfx_attack_slash")
                 .Execute(choiceContext);
-            if (Owner.Creature.GetPowerAmount<RazorScalesPower>() > 0)
-                await HellkiteCmd.AttackTarget(choiceContext, this, play.Target, DynamicVars["BonusDamage"].BaseValue);
+            if (Owner.Creature.GetPowerAmount<RazorScalesPower>() > 0) 
+                DamageCmd.Attack(DynamicVars["BonusDamage"].BaseValue);
         }
     }
 
