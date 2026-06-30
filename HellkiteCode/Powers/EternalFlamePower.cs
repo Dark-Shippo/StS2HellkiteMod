@@ -66,6 +66,17 @@ public sealed class EternalFlamePower : HellkitePower
             Owner,
             null);
     }
+    
+    public override async Task AfterSideTurnEnd(
+        PlayerChoiceContext choiceContext,
+        CombatSide side,
+        IEnumerable<Creature> participants)
+    {
+        // "This turn" effect: fully expire at the end of the player's turn.
+        if (side != CombatSide.Player)
+            return;
+        await PowerCmd.Remove(this);
+    }
 
     private sealed class Data
     {

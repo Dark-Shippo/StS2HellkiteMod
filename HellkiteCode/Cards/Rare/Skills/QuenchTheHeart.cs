@@ -1,9 +1,11 @@
-﻿using Hellkite.HellkiteCode.Extensions;
+using Hellkite.HellkiteCode.Extensions;
 using Hellkite.HellkiteCode.Structs;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
+using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
+using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Powers;
 using MegaCrit.Sts2.Core.ValueProps;
 
@@ -13,26 +15,25 @@ public sealed class QuenchTheHeart() : HellkiteCard(1, CardType.Skill, CardRarit
 {
     protected override HashSet<CardTag> CanonicalTags => [CardTag.Defend];
 
+    // Block == Charge spent, Plating == half of it. The custom vars below preview from the
+    // current Charge so the card shows the real numbers before it's played.
     protected override IEnumerable<DynamicVar> CanonicalVars =>
     [
-        // Block is computed dynamically at play time (= Charge spent), but the var must
-        // exist so DynamicVars.Block resolves and the {Block} loc placeholder renders.
-        new BlockVar(0, ValueProp.Move),
+        new ChargeBlockVar(),
+        new HalfChargePlatingVar(),
         new CardsVar(1)
     ];
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
-        // Lose all FireUp; capture the amount. Routing through SpendFireUp fires
-        // AfterFireUpSpent and records LastFireUpSpent.
+        // Lose all Charge; Block == amount spent, Plating == floor(half).
         var pool = Owner.PlayerCombatState?.GetFireUp() ?? new FireUp();
         var spent = pool.Total;
         await SpendFireUp(pool);
 
-        // Block == spent, Plating == floor(spent / 2).
-        DynamicVars.Block._baseValue = spent;
         if (spent > 0)
         {
+            DynamicVars.Block._baseValue = spent;
             await CreatureCmd.GainBlock(Owner.Creature, DynamicVars.Block, play);
             await PowerCmd.Apply<PlatingPower>(choiceContext, Owner.Creature, spent / 2, Owner.Creature, this);
         }
@@ -41,4 +42,23 @@ public sealed class QuenchTheHeart() : HellkiteCard(1, CardType.Skill, CardRarit
     }
 
     protected override void OnUpgrade() => DynamicVars.Cards.UpgradeValueBy(1M);
+
+    private static int CurrentCharge(CardModel card)
+        => card.Owner?.PlayerCombatState?.GetFireUp().Total ?? 0;
+
+    // Block preview = current Charge.
+    private sealed class ChargeBlockVar() : BlockVar(0M, ValueProp.Move)
+    {
+        public override void UpdateCardPreview(CardModel card, CardPreviewMode previewMode, Creature? target,
+            bool runGlobalHooks)
+            => PreviewValue = CurrentCharge(card);
+    }
+
+    // Plating preview (named "PlatingPower" so the loc placeholder resolves) = half of Charge.
+    private sealed class HalfChargePlatingVar() : DynamicVar(nameof(PlatingPower), 0M)
+    {
+        public override void UpdateCardPreview(CardModel card, CardPreviewMode previewMode, Creature? target,
+            bool runGlobalHooks)
+            => PreviewValue = CurrentCharge(card) / 2;
+    }
 }

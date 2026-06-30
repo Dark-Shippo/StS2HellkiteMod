@@ -8,7 +8,7 @@ namespace Hellkite.HellkiteCode.Cards.Rare.Powers;
 
 public sealed class RekindleCard() : HellkiteCard(3, CardType.Power, CardRarity.Rare, TargetType.Self)
 {
-    protected override IEnumerable<DynamicVar> CanonicalVars => [new("Power", 2M)];
+    protected override IEnumerable<DynamicVar> CanonicalVars => [new("Power", 1M)];
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {

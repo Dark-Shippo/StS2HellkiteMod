@@ -50,7 +50,9 @@ internal class PlayerCombatStateHasEnoughResourcesForPatch
             .opcode(OpCodes.Ldc_I4_0)
             .opcode(OpCodes.Stind_I4)
         ).Insert([
-            CodeInstruction.LoadArgument(0),
+            CodeInstruction.LoadArgument(0), // this (PlayerCombatState)
+            CodeInstruction.LoadArgument(1), // card
+            CodeInstruction.LoadArgument(2), // ref reason
             CodeInstruction.Call(typeof(PlayerCombatStateHasEnoughResourcesForPatch), nameof(HasEnoughFireUp))
         ]);
     }

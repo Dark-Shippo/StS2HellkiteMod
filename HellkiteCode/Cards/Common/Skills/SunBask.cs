@@ -18,15 +18,13 @@ public sealed class SunBask() : HellkiteCard(1, CardType.Skill, CardRarity.Commo
         //new ChargeCostVar("NextCharge", 1)
         new FireUpVar(1).WithUpgrade(1)
     ];
-    
-    public override FireUp CanonicalFireUpCost => new(1);
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
         //await ChargeHandler.GainCharge(Owner.Creature, DynamicVars[ChargeCostVar.DefaultName].IntValue, choiceContext); 
         int amount = DynamicVars[FireUpVar.defaultName].IntValue;
         await HellkitePlayerCmd.GainFireUp(new FireUp(amount), Owner, play);
-        await PowerCmd.Apply<FireUpNextTurnPower>(choiceContext, Owner.Creature, amount, Owner.Creature, this);
+        await PowerCmd.Apply<FireUpNextTurnPower>(choiceContext, Owner.Creature, amount + 3, Owner.Creature, this);
     }
     
     protected override void OnUpgrade()

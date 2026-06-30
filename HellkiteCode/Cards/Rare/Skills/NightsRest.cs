@@ -20,19 +20,20 @@ public sealed class NightsRest() : HellkiteCard(2, CardType.Skill, CardRarity.Ra
     protected override IEnumerable<DynamicVar> CanonicalVars =>
     [
         new HealVar(10M),
-        new HealVar("BonusHeal", 5M),
-        //new ChargeCostVar(15)
+        new HealVar("BonusHeal", 5M)
     ];
 
-    public override FireUp CanonicalFireUpCost => new(15);
+    // Charge is NOT a mandatory cost: the card is always playable; spending 15 Charge is
+    // an optional bonus applied automatically when you can afford it.
+    private const int BonusChargeCost = 15;
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
         await CreatureCmd.Heal(Owner.Creature, DynamicVars.Heal.BaseValue);
 
         var fireUp = Owner.PlayerCombatState?.GetFireUp() ?? new FireUp();
-        var bonusCost = new FireUp(15);
-        
+        var bonusCost = new FireUp(BonusChargeCost);
+
         if (fireUp.CanSpend(bonusCost))
         {
             await CreatureCmd.Heal(Owner.Creature, DynamicVars["BonusHeal"].BaseValue);

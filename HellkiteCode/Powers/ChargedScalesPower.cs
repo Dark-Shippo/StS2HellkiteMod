@@ -25,12 +25,9 @@ public sealed class ChargedScalesPower : HellkitePower, IAfterFireUpGained, IAft
         if (cardPlay.Card.Owner != Owner.Player)
             return;
 
+        // Only deal damage for FireUp gained/spent this card (recorded as pending hits).
+        // Do NOT fire on every card play.
         await FlushPendingHits(choiceContext);
-
-        if (!cardPlay.IsLastInSeries)
-            return;
-
-        await DealDamageToAllEnemies(choiceContext);
     }
 
     // Gain hook — no context, so record and flush later.

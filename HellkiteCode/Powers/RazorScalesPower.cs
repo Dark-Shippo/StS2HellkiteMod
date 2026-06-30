@@ -28,7 +28,8 @@ public sealed class RazorScalesPower : HellkitePower
         if (dealer == null || dealer.Side == Owner.Side)
             return;
 
-        if (result.UnblockedDamage <= 0)
+        // Retaliate on any incoming attack, even if it was fully blocked.
+        if (result.TotalDamage <= 0)
             return;
 
         int retaliationDamage = Amount;

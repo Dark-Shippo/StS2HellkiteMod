@@ -26,8 +26,12 @@ public sealed class TailLash() : HellkiteCard(1, CardType.Attack, CardRarity.Com
                 .Targeting(play.Target)
                 .WithHitFx("vfx/vfx_attack_slash")
                 .Execute(choiceContext);
-            if (Owner.Creature.GetPowerAmount<RazorScalesPower>() > 0) 
-                DamageCmd.Attack(DynamicVars["BonusDamage"].BaseValue);
+            if (Owner.Creature.GetPowerAmount<RazorScalesPower>() > 0)
+                await DamageCmd.Attack(DynamicVars["BonusDamage"].BaseValue)
+                    .FromCard(this)
+                    .Targeting(play.Target)
+                    .WithHitFx("vfx/vfx_attack_slash")
+                    .Execute(choiceContext);
         }
     }
 
