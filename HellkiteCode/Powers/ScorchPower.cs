@@ -20,11 +20,7 @@ public sealed class ScorchPower : HellkitePower
 
     public override Color AmountLabelColor =>
         _normalAmountLabelColor;
-
-    /// <summary>
-    /// Kindle causes Scorch to trigger additional times.
-    /// It cannot trigger more times than the initial Scorch amount.
-    /// </summary>
+    
     private int TriggerCount
     {
         get
@@ -34,27 +30,18 @@ public sealed class ScorchPower : HellkitePower
             if (combatState == null || Amount <= 0)
                 return 0;
 
-            int kindleAmount = combatState
+            int rekindleAmount = combatState
                 .GetOpponentsOf(Owner)
                 .Where(creature => creature.IsAlive)
                 .Sum(creature =>
-                    creature.GetPowerAmount<KindlePower>());
+                    creature.GetPowerAmount<RekindlePower>());
 
             return Math.Min(
                 Amount,
-                1 + kindleAmount);
+                1 + rekindleAmount);
         }
     }
-
-    /// <summary>
-    /// Calculates the total damage Scorch will deal when it next
-    /// triggers, including Kindle and damage modifiers.
-    ///
-    /// Scorch grows after each trigger, so its damage sequence is:
-    /// Amount, Amount + 1, Amount + 2, etc.
-    ///
-    /// Find a way to implement this to the UI.
-    /// </summary>
+    
     public int CalculateTotalDamageAtTurnEnd()
     {
         ICombatState? combatState = Owner.CombatState;
@@ -112,13 +99,7 @@ public sealed class ScorchPower : HellkitePower
             await TriggerOnce(choiceContext);
         }
     }
-
-    /// <summary>
-    /// Triggers this Scorch one time.
-    ///
-    /// Automatic turn-end triggers use no damage source.
-    /// Cards that manually trigger Scorch may provide a source and card.
-    /// </summary>
+    
     public async Task TriggerOnce(
         PlayerChoiceContext choiceContext,
         Creature? damageSource = null,
@@ -139,8 +120,7 @@ public sealed class ScorchPower : HellkitePower
 
         if (Owner.IsAlive)
         {
-            // The growth comes from Scorch itself, not from the card or
-            // creature that originally applied or manually triggered it.
+            
             await PowerCmd.ModifyAmount(
                 choiceContext,
                 this,

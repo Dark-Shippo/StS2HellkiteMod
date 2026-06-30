@@ -23,11 +23,11 @@ public sealed class FurnaceRhythm() : HellkiteCard(1, CardType.Skill, CardRarity
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
         await HellkitePlayerCmd.GainFireUp(new FireUp(this), Owner, play);
-       //await ChargeHandler.GainCharge(Owner.Creature, DynamicVars[ChargeCostVar.DefaultName].IntValue, choiceContext); 
+        // Draw first, then choose a card to discard (matches "Draw X. Discard 1.").
+        await CardPileCmd.Draw(choiceContext, DynamicVars.Cards.IntValue, Owner);
         CardModel? card = (
             await CardSelectCmd.FromHandForDiscard(choiceContext, Owner, new CardSelectorPrefs(CardSelectorPrefs.DiscardSelectionPrompt,
                 1), null, this)).FirstOrDefault();
-        await CardPileCmd.Draw(choiceContext, DynamicVars.Cards.IntValue, Owner);
         if (card == null)
             return;
         await CardCmd.Discard(choiceContext, card);

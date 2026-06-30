@@ -28,13 +28,14 @@ public sealed class BurningReprisalPower : HellkitePower
         }
     }
     
-    public override async Task AfterSideTurnStart(
+    public override async Task AfterSideTurnEnd(
+        PlayerChoiceContext choiceContext,
         CombatSide side,
-        IReadOnlyList<Creature> participants,
-        ICombatState combatState)
+        IEnumerable<Creature> participants)
     {
-        if (!participants.Contains(Owner))
+        // "This turn" effect: fully expire at the end of the player's turn.
+        if (side != CombatSide.Player)
             return;
-        await PowerCmd.Decrement(this);
+        await PowerCmd.Remove(this);
     }
 }

@@ -3,6 +3,7 @@ using BaseLib.Utils.NodeFactories;
 using Hellkite.HellkiteCode.Extensions;
 using Godot;
 using Hellkite.HellkiteCode.Cards.Basic;
+using Hellkite.HellkiteCode.Relics;
 using MegaCrit.Sts2.Core.Entities.Characters;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Relics;
@@ -37,7 +38,7 @@ public class Hellkite : PlaceholderCharacterModel
 
     public override IReadOnlyList<RelicModel> StartingRelics =>
     [
-        ModelDb.Relic<BurningBlood>()
+        ModelDb.Relic<InnerSpark>()
     ];
 
     public override CardPoolModel CardPool => ModelDb.CardPool<HellkiteCardPool>();

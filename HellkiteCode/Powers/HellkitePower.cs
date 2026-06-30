@@ -1,5 +1,6 @@
 ﻿using BaseLib.Abstracts;
 using BaseLib.Extensions;
+using Godot;
 using Hellkite.HellkiteCode.Extensions;
 using MegaCrit.Sts2.Core.Entities.Powers;
 
@@ -14,9 +15,18 @@ namespace Hellkite.HellkiteCode.Powers;
 /// </summary>
 public abstract class HellkitePower : CustomPowerModel
 {
-    //Loads from Hellkite/images/powers/your_power.png
-    public override string CustomPackedIconPath => $"{Id.Entry.RemovePrefix().ToLowerInvariant()}.png".PowerImagePath();
-    public override string CustomBigIconPath => $"{Id.Entry.RemovePrefix().ToLowerInvariant()}.png".BigPowerImagePath();
+    // Loads Hellkite/images/powers/<power_name>.png, falling back to the placeholder
+    // power.png when a per-power icon isn't bundled (avoids missing-resource errors).
+    public override string CustomPackedIconPath => ResolveIconPath(big: false);
+    public override string CustomBigIconPath => ResolveIconPath(big: true);
+
+    private string ResolveIconPath(bool big)
+    {
+        var fileName = $"{Id.Entry.RemovePrefix().ToLowerInvariant()}.png";
+        var path = big ? fileName.BigPowerImagePath() : fileName.PowerImagePath();
+        if (ResourceLoader.Exists(path.ToRes())) return path;
+        return big ? "power.png".BigPowerImagePath() : "power.png".PowerImagePath();
+    }
 
     /// <summary>
     /// Whether this power is a buff or debuff.

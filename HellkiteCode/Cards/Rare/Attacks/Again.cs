@@ -27,26 +27,28 @@ public sealed class Again() : HellkiteCard(0, CardType.Attack, CardRarity.Rare, 
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay play)
     {
-        //await ChargeHandler.LoseCharge(Owner.Creature, DynamicVars[ChargeCostVar.DefaultName].IntValue, choiceContext);
         if (play.Target != null)
             await DamageCmd.Attack(DynamicVars.Damage.BaseValue)
                 .FromCard(this)
                 .Targeting(play.Target)
                 .WithHitFx("vfx/vfx_attack_slash")
                 .Execute(choiceContext);
-        CardSelectorPrefs prefs = new CardSelectorPrefs(SelectionScreenPrompt, 1)
+
+        // Pick the next Attack in hand (not this card) and auto-play it Repeat times.
+        // AutoPlay is free (it does not pay the card's energy/star cost), and we pass the
+        // same target so each replay hits the intended enemy instead of a random one.
+        CardSelectorPrefs prefs = new(SelectionScreenPrompt, 1)
         {
             PretendCardsCanBePlayed = true
         };
-        CardModel? card = (await CardSelectCmd.FromHand(choiceContext, Owner, prefs, (Func<CardModel, bool>) (c => c.Type == CardType.Attack && !c.Keywords.Contains(CardKeyword.Unplayable)), this)).FirstOrDefault();
+        CardModel? card = (await CardSelectCmd.FromHand(choiceContext, Owner, prefs,
+            c => c != this && c.Type == CardType.Attack && !c.Keywords.Contains(CardKeyword.Unplayable),
+            this)).FirstOrDefault();
         if (card == null)
-        {
-        }
-        else
-        {
-            for (int i = 0; i < DynamicVars.Repeat.IntValue; ++i)
-                await CardCmd.AutoPlay(choiceContext, card, null);
-        }
+            return;
+
+        for (int i = 0; i < DynamicVars.Repeat.IntValue; ++i)
+            await CardCmd.AutoPlay(choiceContext, card, play.Target);
     }
     
     protected override void OnUpgrade()

@@ -11,6 +11,8 @@ namespace Hellkite.HellkiteCode.Cards.Uncommon.Attacks;
 
 public sealed class LavaBath() : HellkiteCard(0, CardType.Attack, CardRarity.Uncommon, TargetType.RandomEnemy)
 {
+    public override bool HasFireUpCostX => true;
+    
     protected override IEnumerable<DynamicVar> CanonicalVars =>
     [
         new FireUpVar(3),                   

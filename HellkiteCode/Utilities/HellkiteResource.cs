@@ -15,10 +15,12 @@ public static class HellkiteResource
     public const string NCharSelectBgHellkitePath =
         "res://Hellkite/scenes/screens/char_select/char_select_bg_hellkite.tscn";
 
-    // These assets will be loaded with PreloadManager
+    // These assets will be loaded with PreloadManager.
+    // NFireUpCounterPath/NFireUpIconPath are intentionally omitted: the counter is built in
+    // code now, and the per-card cost uses the native star pip (no custom cost-icon scene).
     public static readonly IEnumerable<string> AssetPaths =
     [
-        NFireUpCounterPath, NFireUpIconPath, NCreatureVisualsHellkitePath,
+        NCreatureVisualsHellkitePath,
         NCharSelectBgHellkitePath,
         "fireup_charge_icon.png".CharacterUiPath().ToRes(),
     ];

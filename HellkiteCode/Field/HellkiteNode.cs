@@ -11,8 +11,9 @@ public static class HellkiteNode
 {
     public static readonly AddedNode<NCombatUi, NFireUpCounter> NFireUpCounter = new(ui =>
     {
-        var fireUpCounter = PreloadManager.Cache.GetScene(HellkiteResource.NFireUpCounterPath)
-            .Instantiate<NFireUpCounter>();
+        // Built in code (see NFireUpCounter) rather than instantiated from a scene, since
+        // the old fireup_counter.tscn is an unconverted Runesmith scene (wrong script + missing assets).
+        var fireUpCounter = new NFireUpCounter();
         ui.AddChild(fireUpCounter);
         return fireUpCounter;
     });

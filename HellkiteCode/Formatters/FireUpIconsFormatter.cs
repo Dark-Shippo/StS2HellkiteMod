@@ -20,7 +20,7 @@ public class FireUpIconsFormatter
         {
             case FireUpVar fireUpVar:
                 amount = Convert.ToInt32(fireUpVar.PreviewValue);
-                iconText = "[img]res://Hellkite/images/charui/fireup_all_icon.png[/img]";
+                iconText = "[img]res://Hellkite/images/charui/big_energy.png[/img]";
                 break;
             case DynamicVar dynVar:
                 amount = Convert.ToInt32(dynVar.PreviewValue);
@@ -68,7 +68,7 @@ public class FireUpIconsFormatter
         var name = format.Split(",").First();
         return name switch
         {
-            "charge" => "[img]res://Hellkite/images/charui/fireup_charge_icon.png[/img]",
+            "charge" => "[img]res://Hellkite/images/charui/big_energy.png[/img]",
             _ => throw new LocException($"Unknown value='{format}'")
         };
     }

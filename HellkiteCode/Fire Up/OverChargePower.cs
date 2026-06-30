@@ -29,7 +29,10 @@ public sealed class OverChargePower : HellkitePower
     public override async Task BeforeSideTurnEnd(PlayerChoiceContext choiceContext, CombatSide side, IEnumerable<Creature> participants)
     {
         if (side != CombatSide.Player) return;
-        await HellkiteCmd.AttackAll(choiceContext, null, Amount);
+        // Use DamageAllEnemies (works for power-sourced damage); AttackAll only fires when
+        // given a card, so passing null there dealt no damage.
+        if (CombatState != null)
+            await HellkiteCmd.DamageAllEnemies(choiceContext, CombatState, Owner, 30);
         await PowerCmd.Remove(this);
         await PowerCmd.Apply<Drained>(choiceContext, Owner, 1M, Owner, null);
     }
