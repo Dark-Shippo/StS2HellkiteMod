@@ -6,7 +6,7 @@ namespace Hellkite.HellkiteCode.Utilities;
 public static class HellkiteResource
 {
     public static Texture2D FireUpIcon =>
-        ResourceLoader.Load<Texture2D>("res://Hellkite/images/charui/fireup_all_icon.png");
+        ResourceLoader.Load<Texture2D>("res://Hellkite/images/charui/big_energy.png");
     
     public const string NFireUpCounterPath = "res://Hellkite/scenes/combat/energy_counters/fireup_counter.tscn";
     public const string NFireUpIconPath = "res://Hellkite/scenes/cards/fireup_icon.tscn";
@@ -22,6 +22,6 @@ public static class HellkiteResource
     [
         NCreatureVisualsHellkitePath,
         NCharSelectBgHellkitePath,
-        "fireup_charge_icon.png".CharacterUiPath().ToRes(),
+        "big_energy.png".CharacterUiPath().ToRes(),
     ];
 }

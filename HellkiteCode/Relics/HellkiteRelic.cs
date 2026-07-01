@@ -18,10 +18,6 @@ namespace Hellkite.HellkiteCode.Relics;
 [Pool(typeof(HellkiteRelicPool))]
 public abstract class HellkiteRelic : CustomRelicModel
 {
-    public override string PackedIconPath => $"{Id.Entry.RemovePrefix().ToLowerInvariant()}.png".RelicImagePath();
-
-    protected override string PackedIconOutlinePath =>
-        $"{Id.Entry.RemovePrefix().ToLowerInvariant()}_outline.png".RelicImagePath();
-
-    protected override string BigIconPath => $"{Id.Entry.RemovePrefix().ToLowerInvariant()}.png".BigRelicImagePath();
+    // Image path overrides intentionally omitted so relics fall back to the base
+    // CustomRelicModel default (placeholder) art until custom relic images are added.
 }

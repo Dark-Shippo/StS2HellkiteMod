@@ -7,7 +7,7 @@ qodana.yaml::TextFile::-1::1781973853::0::1::::<><><>0<>0<><>::
 ::res://bin/::1781443012
 ::res://bin/ExportRelease/::1781443012
 ::res://bin/ExportRelease/net9.0/::1781443012
-::res://bin/ExportRelease/net9.0/publish/::1782914988
+::res://bin/ExportRelease/net9.0/publish/::1782943597
 Hellkite.deps.json::JSON::-1::1782914988::0::1::::<><><>0<>0<><>::
 ::res://Hellkite/::1782607927
 mod_image.png::CompressedTexture2D::8408184222536063285::1780491655::1780840432::1::::<><><>0<>0<>e97e10db00e8c28f97250e94f96ffa18<>res://.godot/imported/mod_image.png-3cfd7d711e0f4cf7e8a079de26660026.ctex::
@@ -203,7 +203,7 @@ OverChargePower.cs::CSharpScript::2723144674772029395::1782876886::0::1::::<><><
 ::res://HellkiteCode/Formatters/::1782783675
 FireUpIconsFormatter.cs::CSharpScript::6622164429611652016::1782783675::0::1::::<><><>0<>0<><>::
 PreviewPluralFormatter.cs::CSharpScript::349428156879071114::1782608239::0::1::::<><><>0<>0<><>::
-::res://HellkiteCode/Hooks/::1782876878
+::res://HellkiteCode/Hooks/::1782914991
 HellkiteHook.cs::CSharpScript::3433657263202225469::1782876878::0::1::::<><><>0<>0<><>::
 IAfterEnterOvercharge.cs::CSharpScript::7274067618833334048::1782876676::0::1::::<><><>0<>0<><>::
 IAfterFireUpGained.cs::CSharpScript::364229386114862524::1782341582::0::1::::<><><>0<>0<><>::
@@ -225,7 +225,7 @@ NHandCardHolderPatches.cs::CSharpScript::8369749847364997861::1782343328::0::1::
 PlayerCombatStatePatches.cs::CSharpScript::8889733198701005282::1782658544::0::1::::<><><>0<>0<><>::
 PowerModelPatches.cs::CSharpScript::6150596976599707166::1782345559::0::1::::<><><>0<>0<><>::
 UnplayableReasonExtensionGetPlayerDialogueLinePatch.cs::CSharpScript::7224525680079859087::1782340644::0::1::::<><><>0<>0<><>::
-::res://HellkiteCode/Potions/::1782913783
+::res://HellkiteCode/Potions/::1782914991
 ChargeWater.cs::CSharpScript::4146143098736874389::1782913774::0::1::::<><><>0<>0<><>::
 HellkitePotion.cs::CSharpScript::6665804485868668293::1780491656::0::1::::<><><>0<>0<><>::
 KindlingOil.cs::CSharpScript::3278559091919669234::1782913779::0::1::::<><><>0<>0<><>::
@@ -256,11 +256,11 @@ RekindlePower.cs::CSharpScript::6049667780392973076::1781401695::0::1::::<><><>0
 ScaleMailPower.cs::CSharpScript::4705929359116506572::1782487816::0::1::::<><><>0<>0<><>::
 ScorchPower.cs::CSharpScript::3226225430193751789::1782876881::0::1::::<><><>0<>0<><>::
 TemperPower.cs::CSharpScript::4641478644100923711::1782533722::0::1::::<><><>0<>0<><>::
-::res://HellkiteCode/Relics/::1782914922
+::res://HellkiteCode/Relics/::1782943522
 BlazingCrown.cs::CSharpScript::1744395588070880234::1782878207::0::1::::<><><>0<>0<><>::
 CrownOfAsh.cs::CSharpScript::6814474574386181125::1782878211::0::1::::<><><>0<>0<><>::
 DragonsHeart.cs::CSharpScript::7906680095144164803::1782913814::0::1::::<><><>0<>0<><>::
-HellkiteRelic.cs::CSharpScript::1594606724168758248::1780491662::0::1::::<><><>0<>0<><>::
+HellkiteRelic.cs::CSharpScript::1594606724168758248::1782943522::0::1::::<><><>0<>0<><>::
 IgnitionSoul.cs::CSharpScript::8641103859804734866::1782878186::0::1::::<><><>0<>0<><>::
 InnerSpark.cs::CSharpScript::758740490339335865::1782914922::0::1::::<><><>0<>0<><>::
 MoltenSheath.cs::CSharpScript::5604740467285890305::1782913816::0::1::::<><><>0<>0<><>::
@@ -269,13 +269,13 @@ OldLighter.cs::CSharpScript::589612141461031175::1782878194::0::1::::<><><>0<>0<
 VolcanicRock.cs::CSharpScript::6072116764212500618::1782878190::0::1::::<><><>0<>0<><>::
 ::res://HellkiteCode/Structs/::1782623687
 FireUp.cs::CSharpScript::3204679879407508478::1782623687::0::1::::<><><>0<>0<><>::
-::res://HellkiteCode/Utilities/::1782655722
+::res://HellkiteCode/Utilities/::1782943519
 BaseResourceIndex.cs::CSharpScript::923666781547840297::1782616801::0::1::::<><><>0<>0<><>::
 BaseSceneIndex.cs::CSharpScript::1583676239547598709::1782606665::0::1::::<><><>0<>0<><>::
 HellkiteCardCostHelper.cs::CSharpScript::1437911023892793898::1782436219::0::1::::<><><>0<>0<><>::
 HellkiteConfig.cs::CSharpScript::261280462411124146::1782606684::0::1::::<><><>0<>0<><>::
 HellkiteKeyword.cs::CSharpScript::4565207344055854346::1782327219::0::1::::<><><>0<>0<><>::
-HellkiteResource.cs::CSharpScript::3414605334106913931::1782655722::0::1::::<><><>0<>0<><>::
+HellkiteResource.cs::CSharpScript::3414605334106913931::1782943516::0::1::::<><><>0<>0<><>::
 HellkiteSubscriber.cs::CSharpScript::5966860759307654413::1782327313::0::1::::<><><>0<>0<><>::
 HellkiteTags.cs::CSharpScript::899756548509103355::1782533722::0::1::::<><><>0<>0<><>::
-HellkiteVarIndex.cs::CSharpScript::6681070473178134114::1782620614::0::1::::<><><>0<>0<><>::
+HellkiteVarIndex.cs::CSharpScript::6681070473178134114::1782943519::0::1::::<><><>0<>0<><>::
