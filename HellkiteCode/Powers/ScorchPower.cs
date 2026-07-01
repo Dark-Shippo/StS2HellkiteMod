@@ -120,7 +120,7 @@ public sealed class ScorchPower : HellkitePower
 
         if (Owner.IsAlive)
         {
-            
+
             await PowerCmd.ModifyAmount(
                 choiceContext,
                 this,
@@ -132,5 +132,9 @@ public sealed class ScorchPower : HellkitePower
         {
             await Cmd.CustomScaledWait(0.1f, 0.25f);
         }
+
+        ICombatState? triggeredState = Owner.CombatState;
+        if (triggeredState != null)
+            await Hooks.HellkiteHook.AfterScorchTriggered(triggeredState, Owner);
     }
 }

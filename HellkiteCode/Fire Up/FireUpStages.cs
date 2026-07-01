@@ -1,5 +1,6 @@
 ﻿using Hellkite.HellkiteCode.Commands;
 using Hellkite.HellkiteCode.Extensions;
+using Hellkite.HellkiteCode.Hooks;
 using Hellkite.HellkiteCode.Powers;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Players;
@@ -104,5 +105,8 @@ public class FireUpStages
             overchargeAmount,
             player.Creature,
             null);
+
+        if (player.Creature.CombatState != null)
+            await HellkiteHook.AfterEnterOvercharge(player.Creature.CombatState);
     }
 }

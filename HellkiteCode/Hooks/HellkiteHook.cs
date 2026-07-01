@@ -3,6 +3,7 @@ using Hellkite.HellkiteCode.Nodes;
 using Hellkite.HellkiteCode.Structs;
 using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Entities.Cards;
+using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
@@ -113,6 +114,16 @@ public static class HellkiteHook
 	public static Task AfterFireUpSpent(ICombatState combatState, FireUp amount, Player spender)
 	{
 		return Dispatch<IAfterFireUpSpent>(combatState, model => model.AfterFireUpSpent(amount, spender));
+	}
+
+	public static Task AfterEnterOvercharge(ICombatState combatState)
+	{
+		return Dispatch<IAfterEnterOvercharge>(combatState, model => model.AfterEnterOvercharge());
+	}
+
+	public static Task AfterScorchTriggered(ICombatState combatState, Creature scorchedTarget)
+	{
+		return Dispatch<IAfterScorchTriggered>(combatState, model => model.AfterScorchTriggered(scorchedTarget));
 	}
 	
 	public static decimal ModifyCharge(ICombatState combatState, Player player, decimal charge, ValueProp props,

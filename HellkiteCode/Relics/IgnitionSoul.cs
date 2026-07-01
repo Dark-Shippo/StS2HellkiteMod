@@ -1,12 +1,12 @@
-﻿using Hellkite.HellkiteCode.Commands;
-using Hellkite.HellkiteCode.Relics;
+using Hellkite.HellkiteCode.Commands;
 using Hellkite.HellkiteCode.Structs;
 using MegaCrit.Sts2.Core.Entities.Relics;
 using MegaCrit.Sts2.Core.Rooms;
 
 namespace Hellkite.HellkiteCode.Relics;
 
-public class InnerSpark() : HellkiteRelic
+/// <summary>Ancient relic. Start each combat with 6 Charge.</summary>
+public class IgnitionSoul() : HellkiteRelic
 {
     private const int StartingCharge = 6;
 

@@ -72,7 +72,7 @@
     <ItemGroup>
         <None Condition="Exists('Directory.Build.props')" Include="Directory.Build.props" />
         <None Include=".gitignore" />
-        <None Include="Hellkite.json" />
+        <None Include="mod_manifest.json" />
         <None Include="project.godot" />
         <None Include="Hellkite/**" />
     </ItemGroup>
@@ -89,10 +89,12 @@
     </Target>
 
     <Target Name="CopyToModsFolderOnBuild" AfterTargets="PostBuildEvent">
-        <Message Text="Copying .dll .pdb and .json to mods folder." Importance="high" />
+        <Message Text="Copying .dll .pdb and mod_manifest.json to mods folder." Importance="high" />
         <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(ModsPath)$(MSBuildProjectName)/" />
-        <Copy SourceFiles="$(AssemblyName).json" DestinationFolder="$(ModsPath)$(MSBuildProjectName)/" />
+        <Copy SourceFiles="mod_manifest.json" DestinationFolder="$(ModsPath)$(MSBuildProjectName)/" />
         <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(ModsPath)$(MSBuildProjectName)/" />
+        <!-- Remove the legacy manifest from a previously deployed build so the loader only sees mod_manifest.json. -->
+        <Delete Files="$(ModsPath)$(MSBuildProjectName)/$(AssemblyName).json" Condition="Exists('$(ModsPath)$(MSBuildProjectName)/$(AssemblyName).json')" />
     </Target>
 
     <Target Name="CopyQuickPck" AfterTargets="PackPck" Condition="Exists('$(PckPackerOutputPath)') And '$(PckPackerSkipped)' != 'true'">

@@ -39,7 +39,22 @@ public static class PlayerCombatStateExtension
         
         public bool HasSpentFireUpThisTurn() => _hasSpentFireUpThisTurn;
 
-        public void ResetTurnTracking() => _hasSpentFireUpThisTurn = false;
+        private bool _suppressOverchargeDrain;
+
+        public void SuppressOverchargeDrainThisTurn() => _suppressOverchargeDrain = true;
+
+        public bool ConsumeOverchargeDrainSuppression()
+        {
+            var value = _suppressOverchargeDrain;
+            _suppressOverchargeDrain = false;
+            return value;
+        }
+
+        public void ResetTurnTracking()
+        {
+            _hasSpentFireUpThisTurn = false;
+            _suppressOverchargeDrain = false;
+        }
 
         public void GainFireUp(FireUp amount)
         {

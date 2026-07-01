@@ -1,4 +1,5 @@
 ﻿using Hellkite.HellkiteCode.Commands;
+using Hellkite.HellkiteCode.Extensions;
 using Hellkite.HellkiteCode.Powers;
 using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Commands;
@@ -34,6 +35,10 @@ public sealed class OverChargePower : HellkitePower
         if (CombatState != null)
             await HellkiteCmd.DamageAllEnemies(choiceContext, CombatState, Owner, 30);
         await PowerCmd.Remove(this);
-        await PowerCmd.Apply<Drained>(choiceContext, Owner, 1M, Owner, null);
+        // Overcharger potion can waive the Drained penalty for the turn it was used.
+        bool suppressDrain =
+            Owner.Player?.PlayerCombatState?.Hellkite()?.ConsumeOverchargeDrainSuppression() ?? false;
+        if (!suppressDrain)
+            await PowerCmd.Apply<Drained>(choiceContext, Owner, 1M, Owner, null);
     }
 }
