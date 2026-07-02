@@ -8,7 +8,7 @@ namespace Hellkite.HellkiteCode.Relics;
 
 public class InnerSpark() : HellkiteRelic
 {
-    private const int StartingCharge = 6;
+    private const int StartingCharge = 3;
 
     public override RelicRarity Rarity => RelicRarity.Starter;
 

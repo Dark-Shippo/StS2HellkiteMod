@@ -169,7 +169,7 @@
   "HELLKITE-AGAIN.title": "Again!",
   "HELLKITE-FIRE_FORCE.description": "Spend 3 [gold]Charges[/gold]. \nDeal {Damage:diff()} damage to all enemies. \nApply {ScorchPower:diff()} [gold]Scorch[/gold] to all enemies. Gain {VigorPower:diff()} [gold]Vigor[/gold].",
   "HELLKITE-FIRE_FORCE.title": "Fire Force",
-  "HELLKITE-WORLD_BREAKER.description": "Spend all [gold]Charge[/gold]. \nDeal {Damage:diff()} damage and apply [gold]Scorch[/gold] equal to the [gold]Charge[/gold] spent to all enemies.",
+  "HELLKITE-WORLD_BREAKER.description": "Spend all [gold]Charge[/gold]. \nDeal {Damage} damage and apply [gold]Scorch[/gold] equal to the [gold]Charge[/gold] spent to all enemies.",
   "HELLKITE-WORLD_BREAKER.title": "World Breaker",
   "HELLKITE-FLAME_CHARGE.description": "Deal {Damage:diff()} damage. \nIf you are [gold]Overcharged[/gold], deal it twice.",
   "HELLKITE-FLAME_CHARGE.title": "Flame Charge",
